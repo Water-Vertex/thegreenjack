@@ -53,7 +53,11 @@
                 <span class="material-icons text-2xl">assignment</span>
                 <span class="text-sm font-medium">Repair Requests</span>
             </a>
-
+            
+<a href="{{ route('admin.contacts') }}" wire:navigate class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/80 hover:text-white hover:bg-[#5C9F01]/40 transition-all duration-200 group">
+    <span class="material-icons text-2xl">contact_mail</span>
+    <span class="text-sm font-medium">Contacts</span>
+</a>
 
             <!-- Banner -->
             <a href="" wire:navigate class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/80 hover:text-white hover:bg-[#5C9F01]/40 transition-all duration-200 group">
