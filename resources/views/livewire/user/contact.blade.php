@@ -95,56 +95,77 @@
                 </h4>
                 
                 <!-- Contact Form -->
-                <form class="contact-form" method="post" action="#">
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                        
-                        <!-- Your Name -->
-                        <div class="form-group">
-                            <input type="text" name="text-368" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-[#5B9F01] focus:ring-2 focus:ring-[#5B9F01]/20 transition-all duration-300" placeholder="Your Name" required>
-                        </div>
-                        
-                        <!-- Email Address -->
-                        <div class="form-group">
-                            <input type="email" name="email-248" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-[#5B9F01] focus:ring-2 focus:ring-[#5B9F01]/20 transition-all duration-300" placeholder="Email Address" required>
-                        </div>
-                        
-                        <!-- Phone Number -->
-                        <div class="form-group">
-                            <input type="tel" name="tel-278" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-[#5B9F01] focus:ring-2 focus:ring-[#5B9F01]/20 transition-all duration-300" placeholder="Phone Number">
-                        </div>
-                        
-                        <!-- Service Selection Dropdown -->
-                        <div class="form-group">
-                            <select name="menu-552" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-[#5B9F01] focus:ring-2 focus:ring-[#5B9F01]/20 transition-all duration-300 bg-white cursor-pointer">
-                                <option value="iPhone Repair">iPhone Repair</option>
-                                <option value="iPad Repair">iPad Repair</option>
-                                <option value="Android Phone Repair">Android Phone Repair</option>
-                                <option value="Android Tablet Repair">Android Tablet Repair</option>
-                                <option value="PC-Laptop Repair">PC-Laptop Repair</option>
-                                <option value="Mac-iMac Repair">Mac-iMac Repair</option>
-                                <option value="Game System Repair">Game System Repair</option>
-                                <option value="Document Printing">Document Printing</option>
-                                <option value="Business Cards">Business Cards</option>
-                                <option value="Signs & Banners">Signs & Banners</option>
-                            </select>
-                        </div>
-                        
-                        <!-- Message -->
-                        <div class="form-group md:col-span-2">
-                            <textarea name="textarea-38" rows="5" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-[#5B9F01] focus:ring-2 focus:ring-[#5B9F01]/20 transition-all duration-300 resize-none" placeholder="Your Message"></textarea>
-                        </div>
-                        
-                        <!-- Submit Button -->
-                        <div class="form-group md:col-span-2 text-center">
-                            <button type="submit" class="bg-[#5B9F01] hover:bg-[#4a7f01] text-white font-semibold px-8 py-3 rounded-full transition duration-300 shadow-md hover:shadow-lg w-full md:w-auto min-w-[200px]">
-                                Submit Now
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <!-- Form Messages Container -->
-                    <div class="form-messages mt-4 text-center"></div>
-                </form>
+             <!-- Contact Form -->
+<form wire:submit.prevent="save" class="contact-form">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+        
+        <!-- Your Name -->
+        <div class="form-group">
+            <input type="text" wire:model="name" 
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-[#5B9F01] focus:ring-2 focus:ring-[#5B9F01]/20 transition-all duration-300" 
+                placeholder="Your Name">
+            @error('name') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
+        </div>
+        
+        <!-- Email Address -->
+        <div class="form-group">
+            <input type="email" wire:model="email" 
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-[#5B9F01] focus:ring-2 focus:ring-[#5B9F01]/20 transition-all duration-300" 
+                placeholder="Email Address">
+            @error('email') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
+        </div>
+        
+        <!-- Phone Number -->
+        <div class="form-group">
+            <input type="tel" wire:model="phone_number" 
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-[#5B9F01] focus:ring-2 focus:ring-[#5B9F01]/20 transition-all duration-300" 
+                placeholder="Phone Number">
+            @error('phone_number') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
+        </div>
+        
+        <!-- Service Selection Dropdown -->
+        <div class="form-group">
+            <select wire:model="services" 
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-[#5B9F01] focus:ring-2 focus:ring-[#5B9F01]/20 transition-all duration-300 bg-white cursor-pointer">
+                <option value="">-- Select Service --</option>
+                <option value="iPhone Repair">iPhone Repair</option>
+                <option value="iPad Repair">iPad Repair</option>
+                <option value="Android Phone Repair">Android Phone Repair</option>
+                <option value="Android Tablet Repair">Android Tablet Repair</option>
+                <option value="PC-Laptop Repair">PC-Laptop Repair</option>
+                <option value="Mac-iMac Repair">Mac-iMac Repair</option>
+                <option value="Game System Repair">Game System Repair</option>
+                <option value="Document Printing">Document Printing</option>
+                <option value="Business Cards">Business Cards</option>
+                <option value="Signs & Banners">Signs & Banners</option>
+            </select>
+        </div>
+        
+        <!-- Message -->
+        <div class="form-group md:col-span-2">
+            <textarea wire:model="message" rows="5" 
+                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-[#5B9F01] focus:ring-2 focus:ring-[#5B9F01]/20 transition-all duration-300 resize-none" 
+                placeholder="Your Message"></textarea>
+            @error('message') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
+        </div>
+        
+        <!-- Submit Button -->
+        <div class="form-group md:col-span-2 text-center">
+            <button type="submit" 
+                class="bg-[#5B9F01] hover:bg-[#4a7f01] text-white font-semibold px-8 py-3 rounded-full transition duration-300 shadow-md hover:shadow-lg w-full md:w-auto min-w-[200px]">
+                <span wire:loading.remove wire:target="save">Submit Now</span>
+                <span wire:loading wire:target="save">Sending...</span>
+            </button>
+        </div>
+    </div>
+    
+    <!-- Success Message -->
+    @if($successMessage)
+        <div class="mt-4 text-center bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg">
+            ✅ {{ $successMessage }}
+        </div>
+    @endif
+</form>
             </div>
         </div>
     </div>
