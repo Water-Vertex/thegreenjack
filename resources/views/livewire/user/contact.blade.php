@@ -3,14 +3,14 @@
 <div class="breadcumb-wrapper relative bg-gray-100 py-16 md:py-20 overflow-hidden">
     <!-- Background Decoration -->
     <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%235B9F01" fill-opacity="0.05"%3E%3Cpath d="M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-30"></div>
-    
+
     <div class="container mx-auto px-4 max-w-7xl relative z-10">
         <div class="text-center">
             <!-- Page Title -->
             <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-800 mb-3">
                 Contact
             </h1>
-            
+
             <!-- Breadcrumb Navigation -->
             <ul class="flex items-center justify-center gap-2 text-sm text-gray-500">
                 <li>
@@ -32,7 +32,7 @@
 <section class="py-10 bg-gray-50">
     <div class="container mx-auto px-4 max-w-7xl">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-0">
-            
+
             <!-- Card 1 - Office Location -->
             <div class="bg-white p-8 text-center md:rounded-l-2xl shadow-md hover:shadow-lg transition-shadow duration-300">
                 <div class="contact-feature_icon mb-4">
@@ -44,12 +44,12 @@
                 <h3 class="text-xl font-bold text-gray-800">Columbus, Ohio</h3>
                 <p class="text-gray-500 text-sm mt-2">123 Main Street, Columbus, OH 43215</p>
             </div>
-            
+
             <!-- Card 2 - Phone (Highlighted with Green Background) -->
             <div class="bg-[#5B9F01] p-8 text-center shadow-md hover:shadow-lg transition-shadow duration-300 relative overflow-hidden">
                 <!-- Decorative pattern -->
                 <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg fill="%23ffffff" fill-opacity="0.05"%3E%3Cpath d="M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] opacity-20"></div>
-                
+
                 <div class="relative z-10">
                     <div class="contact-feature_icon mb-4">
                         <div class="w-16 h-16 bg-white/20 rounded-full flex items-center justify-center mx-auto">
@@ -63,7 +63,7 @@
                     <p class="text-white/70 text-sm mt-2">Mon-Sat: 9am - 7pm</p>
                 </div>
             </div>
-            
+
             <!-- Card 3 - Email -->
             <div class="bg-white p-8 text-center md:rounded-r-2xl shadow-md hover:shadow-lg transition-shadow duration-300">
                 <div class="contact-feature_icon mb-4">
@@ -84,88 +84,88 @@
 <section class="py-10 bg-gray-50 relative overflow-hidden">
     <!-- Background Image -->
     <div class="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-10" style="background-image: url('http://technician.watervertex.com/wp-content/uploads/2026/04/contact_bg_2-1.png');"></div>
-    
+
     <div class="container mx-auto px-4 max-w-7xl relative z-10">
         <div class="max-w-4xl mx-auto lg:ml-auto lg:mr-0 lg:max-w-2xl xl:max-w-3xl">
             <div class="bg-white rounded-2xl shadow-xl p-6 md:p-8 lg:p-10">
-                
+
                 <!-- Form Header -->
                 <h4 class="text-2xl md:text-3xl font-bold text-gray-800 text-center mb-6">
                     Get in <span class="text-[#5B9F01]">contact</span> with us
                 </h4>
-                
+ <!-- Success Message -->
+                    @if($successMessage)
+                        <div class="mt-4 text-center bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg">
+                            ✅ {{ $successMessage }}
+                        </div>
+                    @endif
                 <!-- Contact Form -->
              <!-- Contact Form -->
-<form wire:submit.prevent="save" class="contact-form">
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-        
-        <!-- Your Name -->
-        <div class="form-group">
-            <input type="text" wire:model="name" 
-                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-[#5B9F01] focus:ring-2 focus:ring-[#5B9F01]/20 transition-all duration-300" 
-                placeholder="Your Name">
-            @error('name') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
-        </div>
-        
-        <!-- Email Address -->
-        <div class="form-group">
-            <input type="email" wire:model="email" 
-                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-[#5B9F01] focus:ring-2 focus:ring-[#5B9F01]/20 transition-all duration-300" 
-                placeholder="Email Address">
-            @error('email') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
-        </div>
-        
-        <!-- Phone Number -->
-        <div class="form-group">
-            <input type="tel" wire:model="phone_number" 
-                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-[#5B9F01] focus:ring-2 focus:ring-[#5B9F01]/20 transition-all duration-300" 
-                placeholder="Phone Number">
-            @error('phone_number') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
-        </div>
-        
-        <!-- Service Selection Dropdown -->
-        <div class="form-group">
-            <select wire:model="services" 
-                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-[#5B9F01] focus:ring-2 focus:ring-[#5B9F01]/20 transition-all duration-300 bg-white cursor-pointer">
-                <option value="">-- Select Service --</option>
-                <option value="iPhone Repair">iPhone Repair</option>
-                <option value="iPad Repair">iPad Repair</option>
-                <option value="Android Phone Repair">Android Phone Repair</option>
-                <option value="Android Tablet Repair">Android Tablet Repair</option>
-                <option value="PC-Laptop Repair">PC-Laptop Repair</option>
-                <option value="Mac-iMac Repair">Mac-iMac Repair</option>
-                <option value="Game System Repair">Game System Repair</option>
-                <option value="Document Printing">Document Printing</option>
-                <option value="Business Cards">Business Cards</option>
-                <option value="Signs & Banners">Signs & Banners</option>
-            </select>
-        </div>
-        
-        <!-- Message -->
-        <div class="form-group md:col-span-2">
-            <textarea wire:model="message" rows="5" 
-                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-[#5B9F01] focus:ring-2 focus:ring-[#5B9F01]/20 transition-all duration-300 resize-none" 
-                placeholder="Your Message"></textarea>
-            @error('message') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
-        </div>
-        
-        <!-- Submit Button -->
-        <div class="form-group md:col-span-2 text-center">
-            <button type="submit" 
-                class="bg-[#5B9F01] hover:bg-[#4a7f01] text-white font-semibold px-8 py-3 rounded-full transition duration-300 shadow-md hover:shadow-lg w-full md:w-auto min-w-[200px]">
-                <span wire:loading.remove wire:target="save">Submit Now</span>
-                <span wire:loading wire:target="save">Sending...</span>
-            </button>
-        </div>
-    </div>
-    
-    <!-- Success Message -->
-    @if($successMessage)
-        <div class="mt-4 text-center bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg">
-            ✅ {{ $successMessage }}
-        </div>
-    @endif
-</form>
+                <form wire:submit.prevent="save" class="contact-form">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+                        <!-- Your Name -->
+                        <div class="form-group">
+                            <input type="text" wire:model="name"
+                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-[#5B9F01] focus:ring-2 focus:ring-[#5B9F01]/20 transition-all duration-300"
+                                placeholder="Your Name">
+                            @error('name') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
+                        </div>
+
+                        <!-- Email Address -->
+                        <div class="form-group">
+                            <input type="email" wire:model="email"
+                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-[#5B9F01] focus:ring-2 focus:ring-[#5B9F01]/20 transition-all duration-300"
+                                placeholder="Email Address">
+                            @error('email') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
+                        </div>
+
+                        <!-- Phone Number -->
+                        <div class="form-group">
+                            <input type="tel" wire:model="phone_number"
+                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-[#5B9F01] focus:ring-2 focus:ring-[#5B9F01]/20 transition-all duration-300"
+                                placeholder="Phone Number">
+                            @error('phone_number') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
+                        </div>
+
+                        <!-- Service Selection Dropdown -->
+                        <div class="form-group">
+                            <select wire:model="services"
+                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-[#5B9F01] focus:ring-2 focus:ring-[#5B9F01]/20 transition-all duration-300 bg-white cursor-pointer">
+                                <option value="">-- Select Service --</option>
+                                <option value="iPhone Repair">iPhone Repair</option>
+                                <option value="iPad Repair">iPad Repair</option>
+                                <option value="Android Phone Repair">Android Phone Repair</option>
+                                <option value="Android Tablet Repair">Android Tablet Repair</option>
+                                <option value="PC-Laptop Repair">PC-Laptop Repair</option>
+                                <option value="Mac-iMac Repair">Mac-iMac Repair</option>
+                                <option value="Game System Repair">Game System Repair</option>
+                                <option value="Document Printing">Document Printing</option>
+                                <option value="Business Cards">Business Cards</option>
+                                <option value="Signs & Banners">Signs & Banners</option>
+                            </select>
+                        </div>
+
+                        <!-- Message -->
+                        <div class="form-group md:col-span-2">
+                            <textarea wire:model="message" rows="5"
+                                class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:border-[#5B9F01] focus:ring-2 focus:ring-[#5B9F01]/20 transition-all duration-300 resize-none"
+                                placeholder="Your Message"></textarea>
+                            @error('message') <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> @enderror
+                        </div>
+
+                        <!-- Submit Button -->
+                        <div class="form-group md:col-span-2 text-center">
+                            <button type="submit"
+                                class="bg-[#5B9F01] hover:bg-[#4a7f01] text-white font-semibold px-8 py-3 rounded-full transition duration-300 shadow-md hover:shadow-lg w-full md:w-auto min-w-[200px]">
+                                <span wire:loading.remove wire:target="save">Submit Now</span>
+                                <span wire:loading wire:target="save">Sending...</span>
+                            </button>
+                        </div>
+                    </div>
+
+
+                </form>
             </div>
         </div>
     </div>
