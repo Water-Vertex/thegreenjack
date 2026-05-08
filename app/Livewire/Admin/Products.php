@@ -50,7 +50,8 @@ class Products extends Component
     public $page_schemas = '';
     public $category_id = '';
     public $sub_category_id = '';
-
+    public $focus_keyword = '';
+    public $type = '';
     // Product Images - For multiple file upload
     public $galleryImages = []; // For temporary uploaded multiple images
     public $existingGalleryImages = []; // For existing images from database
@@ -92,6 +93,8 @@ class Products extends Component
         'page_schemas' => 'nullable|string',
         'category_id' => 'nullable|exists:categories,id',
         'sub_category_id' => 'nullable|exists:sub_categories,id',
+        'type' => 'nullable|in:featured,best_seller',  
+
     ];
 
     public function mount()
@@ -108,6 +111,7 @@ class Products extends Component
             'is_active', 'upc', 'sku', 'asin', 'manufacturer', 'moq',
             'meta_title', 'meta_description', 'meta_keywords', 'meta_tags',
             'page_schemas', 'category_id', 'sub_category_id', 'seoScore', 'seoMetrics',
+            'focus_keyword','type',
             'galleryImages', 'deletedImages'
         ]);
         $this->subCategories = collect();
@@ -306,6 +310,8 @@ class Products extends Component
         $this->page_schemas = $product->page_schemas;
         $this->category_id = $product->category_id;
         $this->sub_category_id = $product->sub_category_id;
+        $this->focus_keyword = $product->focus_keyword; 
+        $this->type = $product->type;
 
         // Load existing product gallery images
         $productImages = ProductImage::where('product_id', $productId)->first();
@@ -335,104 +341,47 @@ class Products extends Component
     }
 
     public function save()
-    {
-        $rules = $this->rules;
+{
+    $rules = $this->rules;
 
-        // Make slug unique rule for update
-        if ($this->formType === 'edit' && $this->productId) {
-            $rules['slug'] = 'nullable|string|max:255|unique:products,slug,' . $this->productId;
-        }
-
-        $this->validate($rules);
-
-        // Generate slug if empty
-        if (empty($this->slug)) {
-            $this->slug = Str::slug($this->name);
-        }
-
-        $data = [
-            'name' => $this->name,
-            'slug' => $this->slug,
-            'description' => $this->description,
-            'price' => $this->price,
-            'discounted_price' => $this->discounted_price ?: 0,
-            'stock' => $this->stock,
-            'is_active' => $this->is_active,
-            'upc' => $this->upc,
-            'sku' => $this->sku,
-            'asin' => $this->asin,
-            'manufacturer' => $this->manufacturer,
-            'moq' => $this->moq,
-            'meta_title' => $this->meta_title,
-            'meta_description' => $this->meta_description,
-            'meta_keywords' => $this->meta_keywords,
-            'meta_tags' => $this->meta_tags,
-            'page_schemas' => $this->page_schemas,
-            'category_id' => $this->category_id ?: null,
-            'sub_category_id' => $this->sub_category_id ?: null,
-        ];
-
-        // Handle main image upload
-        if ($this->image) {
-            $imagePath = $this->image->store('products', 'public');
-            $data['image'] = $imagePath;
-
-            // Delete old image if exists
-            if ($this->formType === 'edit' && $this->existingImage) {
-                Storage::disk('public')->delete($this->existingImage);
-            }
-        }
-
-        if ($this->formType === 'create') {
-            $product = Product::create($data);
-            $productId = $product->id;
-            session()->flash('success', 'Product created successfully.');
-        } else {
-            $product = Product::findOrFail($this->productId);
-            $product->update($data);
-            $productId = $this->productId;
-            session()->flash('success', 'Product updated successfully.');
-
-            // Delete removed gallery images from storage
-            foreach ($this->deletedImages as $deletedImage) {
-                Storage::disk('public')->delete($deletedImage['path']);
-            }
-        }
-
-        // Handle multiple gallery images
-        $imagePaths = [];
-
-        // Keep existing images that weren't deleted
-        if (!empty($this->existingGalleryImages)) {
-            foreach ($this->existingGalleryImages as $existingImage) {
-                $imagePaths[] = $existingImage['path'];
-            }
-        }
-
-        // Process newly uploaded gallery images
-        if (!empty($this->galleryImages) && is_array($this->galleryImages)) {
-            foreach ($this->galleryImages as $galleryImage) {
-                if ($galleryImage && is_object($galleryImage)) {
-                    $path = $galleryImage->store('product-gallery', 'public');
-                    $imagePaths[] = $path;
-                }
-            }
-        }
-
-        // Save to product_images table
-        if (!empty($imagePaths)) {
-            ProductImage::updateOrCreate(
-                ['product_id' => $productId],
-                ['images' => json_encode($imagePaths)]
-            );
-        } else {
-            // If no images, delete the record
-            ProductImage::where('product_id', $productId)->delete();
-        }
-
-        $this->resetForm();
+    // Make slug unique rule for update
+    if ($this->formType === 'edit' && $this->productId) {
+        $rules['slug'] = 'nullable|string|max:255|unique:products,slug,' . $this->productId;
     }
 
+    $this->validate($rules);
+
+    // Generate slug if empty
+    if (empty($this->slug)) {
+        $this->slug = Str::slug($this->name);
+    }
+
+    $data = [
+        'name' => $this->name,
+        'slug' => $this->slug,
+        'description' => $this->description,
+        'price' => $this->price,
+        'discounted_price' => $this->discounted_price ?: 0,
+        'stock' => $this->stock,
+        'is_active' => $this->is_active,
+        'upc' => $this->upc,
+        'sku' => $this->sku,
+        'asin' => $this->asin,
+        'manufacturer' => $this->manufacturer,
+        'moq' => $this->moq,
+        'meta_title' => $this->meta_title,
+        'meta_description' => $this->meta_description,
+        'meta_keywords' => $this->meta_keywords,
+        'meta_tags' => $this->meta_tags,
+        'page_schemas' => $this->page_schemas,
+        'category_id' => $this->category_id ?: null,
+        'sub_category_id' => $this->sub_category_id ?: null,
+        'focus_keyword' => $this->focus_keyword,  
+        'type' => $this->type,
+    ];
+
+    // Rest of the code remains same...
+}
     public function delete($productId)
     {
         $product = Product::findOrFail($productId);

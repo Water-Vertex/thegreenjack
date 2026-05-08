@@ -48,6 +48,13 @@ protected $table = 'seo_settings';
         'faq_meta_description',
         'faq_meta_keywords',
         'faq_meta_tags',
+
+        'home_focus_keyword',
+    'about_focus_keyword',
+    'contact_focus_keyword',
+    'service_focus_keyword',
+    'products_focus_keyword',
+    'faq_focus_keyword',
     ];
 
     protected $casts = [
