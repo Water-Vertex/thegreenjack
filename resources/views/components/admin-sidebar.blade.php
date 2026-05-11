@@ -83,7 +83,11 @@
                 <span class="material-icons text-2xl">settings</span>
                 <span class="text-sm font-medium">Site Settings</span>
             </a>
-
+<!-- Programatic SEO -->
+<a href="{{ route('admin.programatic-seo') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/80 hover:text-white hover:bg-[#5C9F01]/40 transition-all duration-200 group">
+    <span class="material-icons text-2xl">travel_explore</span>
+    <span class="text-sm font-medium">Programatic SEO</span>
+</a>
 
 
             <!-- Pages -->

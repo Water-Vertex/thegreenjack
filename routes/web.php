@@ -9,6 +9,7 @@ use App\Livewire\Admin\Problems;
 use App\Livewire\Admin\Products;
 use App\Livewire\Admin\RepairRequests;
 use App\Livewire\Admin\SubCategories;
+use App\Livewire\Admin\ProgramaticSeo as ProgramaticSeoManager;
 use App\Livewire\Auth\Login;
 use App\Livewire\Auth\Logout;
 use App\Livewire\User\Cart;
@@ -20,6 +21,7 @@ use App\Livewire\User\PrintingMarketing;
 use App\Livewire\User\Products as UserProducts;
 use App\Livewire\User\Repair;
 use App\Livewire\User\Shop;
+use App\Livewire\User\ProgramaticSeoPage;
 use App\Livewire\User\ShopDetails;
 use App\Livewire\Admin\Contacts; 
 use Illuminate\Support\Facades\Route;
@@ -38,6 +40,7 @@ Route::get('/products',UserProducts::class)->name('products');
 Route::get('/product/{slug}',ShopDetails::class)->name('shop.details');
 Route::get('/cart', Cart::class)->name('cart.page');
 Route::get('/checkout', Checkout::class)->name('checkout');
+Route::get('/seo/{slug}', ProgramaticSeoPage::class)->name('seo.show');
 
 Route::middleware(['auth','preventback'])->prefix('admin')->name('admin.')->group(function () {
 	Route::get('/dashboard',Dashboard::class)->name('index');
@@ -50,5 +53,5 @@ Route::middleware(['auth','preventback'])->prefix('admin')->name('admin.')->grou
     Route::get('/problems', Problems::class)->name('problems');
     Route::get('/repair-requests', RepairRequests::class)->name('repair-requests');
     Route::get('/contacts', Contacts::class)->name('contacts');
-
+     Route::get('/programatic-seo', ProgramaticSeoManager::class)->name('programatic-seo');
 });
