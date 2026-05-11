@@ -10,6 +10,7 @@ use App\Livewire\Admin\Products;
 use App\Livewire\Admin\RepairRequests;
 use App\Livewire\Admin\SubCategories;
 use App\Livewire\Admin\PageMetaService;
+use App\Livewire\Admin\BlogManager;
 use App\Livewire\Auth\Login;
 use App\Livewire\Auth\Logout;
 use App\Livewire\User\Cart;
@@ -52,5 +53,5 @@ Route::middleware(['auth','preventback'])->prefix('admin')->name('admin.')->grou
     Route::get('/repair-requests', RepairRequests::class)->name('repair-requests');
     Route::get('/settings', Settings::class)->name('settings');
     Route::get('/seo-settings', PageMetaService::class)->name('seo-settings');
-
+    Route::get('/blogs', BlogManager::class)->name('blogs'); 
 });
