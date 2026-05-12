@@ -53,10 +53,15 @@
                 <span class="material-icons text-2xl">assignment</span>
                 <span class="text-sm font-medium">Repair Requests</span>
             </a>
-            
+
             <a href="{{ route('admin.contacts') }}" wire:navigate class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/80 hover:text-white hover:bg-[#5C9F01]/40 transition-all duration-200 group">
                 <span class="material-icons text-2xl">contact_mail</span>
                 <span class="text-sm font-medium">Contacts</span>
+            </a>
+
+             <a href="{{ route('admin.blogs') }}" wire:navigate class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/80 hover:text-white hover:bg-[#5C9F01]/40 transition-all duration-200 group">
+                <span class="material-icons text-2xl">article</span>
+                <span class="text-sm font-medium">Blog</span>
             </a>
 
             <!-- Banner -->
@@ -86,6 +91,11 @@
             <a href="{{ route('admin.seo-settings') }}" wire:navigate class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/80 hover:text-white hover:bg-[#5C9F01]/40 transition-all duration-200 group">
                 <span class="material-icons text-2xl">manage_search</span>
                 <span class="text-sm font-medium">SEO Settings</span>
+            </a>
+
+            <a href="{{ route('admin.programatic-seo') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/80 hover:text-white hover:bg-[#5C9F01]/40 transition-all duration-200 group">
+                <span class="material-icons text-2xl">travel_explore</span>
+                <span class="text-sm font-medium">Programatic SEO</span>
             </a>
 
             <!-- Pages -->

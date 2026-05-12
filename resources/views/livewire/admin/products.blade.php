@@ -519,9 +519,9 @@
                             <h4 class="text-md font-semibold text-gray-900 mb-3">SEO Settings</h4>
 
                             <div class="space-y-4">
-                                
+
                                     <label class="block text-sm font-medium text-gray-700 mb-1">
-                                        Focus Keyword 
+                                        Focus Keyword
                                         <span class="text-xs text-gray-500"></span>
                                     </label>
                                     <input
@@ -533,7 +533,7 @@
                                     >
                                     <div class="mt-2 flex items-center justify-between">
                                         <!-- <p class="text-xs text-gray-500">
-                                            <i class="fas fa-info-circle"></i> 
+                                            <i class="fas fa-info-circle"></i>
                                             This keyword will be used to optimize your product for search engines
                                         </p> -->
                                         @if(!empty($focus_keyword))
@@ -541,12 +541,12 @@
                                                 <i class="fas fa-check-circle"></i> Keyword set: {{ Str::limit($focus_keyword, 30) }}
                                             </span>
                                         @endif
-                                    
+
                                 </div>
 <!-- Product Type Selection - Add this in Basic Information section after Manufacturer -->
 <div class="col-span-2">
     <label class="block text-sm font-medium text-gray-700 mb-1">
-        Product Type 
+        Product Type
         <span class="text-xs text-gray-500">(Optional)</span>
     </label>
     <select

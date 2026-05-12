@@ -93,7 +93,7 @@ class Products extends Component
         'page_schemas' => 'nullable|string',
         'category_id' => 'nullable|exists:categories,id',
         'sub_category_id' => 'nullable|exists:sub_categories,id',
-        'type' => 'nullable|in:featured,best_seller',  
+        'type' => 'nullable|in:featured,best_seller',
 
     ];
 
@@ -310,7 +310,7 @@ class Products extends Component
         $this->page_schemas = $product->page_schemas;
         $this->category_id = $product->category_id;
         $this->sub_category_id = $product->sub_category_id;
-        $this->focus_keyword = $product->focus_keyword; 
+        $this->focus_keyword = $product->focus_keyword;
         $this->type = $product->type;
 
         // Load existing product gallery images
@@ -376,7 +376,7 @@ class Products extends Component
         'page_schemas' => $this->page_schemas,
         'category_id' => $this->category_id ?: null,
         'sub_category_id' => $this->sub_category_id ?: null,
-        'focus_keyword' => $this->focus_keyword,  
+        'focus_keyword' => $this->focus_keyword,
         'type' => $this->type,
     ];
 
