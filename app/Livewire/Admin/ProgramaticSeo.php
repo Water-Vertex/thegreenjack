@@ -68,7 +68,7 @@ class ProgramaticSeo extends Component
     public function importFile()
     {
         $this->validate(['csvFile' => 'required|file|mimes:csv,xls,xlsx,txt|max:10240']);
-        
+
         $fileHash = md5_file($this->csvFile->getRealPath());
         $dbHasData = ProgramaticSeoModel::exists();
 
@@ -84,7 +84,7 @@ class ProgramaticSeo extends Component
         try {
             $path = $this->csvFile->getRealPath();
             $extension = strtolower($this->csvFile->getClientOriginalExtension());
-            $rows = in_array($extension, ['xls', 'xlsx']) 
+            $rows = in_array($extension, ['xls', 'xlsx'])
                 ? IOFactory::load($path)->getActiveSheet()->toArray(null, true, true, false)
                 : array_map('str_getcsv', file($path));
 
@@ -110,7 +110,7 @@ class ProgramaticSeo extends Component
                     foreach ($mappedData as $key => $value) {
                         if (trim((string)($existing->$key ?? '')) !== trim((string)($value ?? ''))) { $isDifferent = true; break; }
                     }
-                    if ($isDifferent) { $existing->update($mappedData); $counts['updated']++; } 
+                    if ($isDifferent) { $existing->update($mappedData); $counts['updated']++; }
                     else { $counts['skipped']++; }
                 } else {
                     ProgramaticSeoModel::create($mappedData); $counts['new']++;
@@ -120,7 +120,7 @@ class ProgramaticSeo extends Component
             $this->importSummary = $counts;
             $this->importSuccess = true;
             $this->importMessage = ($counts['new'] > 0 || $counts['updated'] > 0) ? "Import completed successfully!" : "No changes detected this file is already uploaded.";
-            
+
             Session::put('last_imported_file_hash', $fileHash);
             $this->resetCsvFile();
             $this->resetPage();
@@ -144,22 +144,45 @@ class ProgramaticSeo extends Component
         return ['title', 'slug', 'meta_title', 'meta_description', 'meta_keywords', 'meta_tags', 'page_schema', 'focus_keyword', 'content', 'image', 'image_alt', 'h1_heading', 'faqs', 'section_content_left', 'section_content_right', 'image_left', 'image_right', 'image_left_alt', 'image_right_alt'];
     }
 
-    public function openEditModal($id) {
-        $record = ProgramaticSeoModel::findOrFail($id);
-        $this->editingId = $id;
-        foreach ($this->formFieldNames() as $field) { $this->$field = $record->$field ?? ''; }
-        $this->showFormModal = true;
-    }
+  public function openEditModal($id)
+{
+    $record = ProgramaticSeoModel::findOrFail($id);
+    
+    $this->editingId = $id;
+    
+    // Form fields ko populate karein
+    $this->focus_keyword = $record->focus_keyword;
+    $this->title = $record->title;
+    $this->slug = $record->slug;
+    $this->h1_heading = $record->h1_heading;
+    $this->meta_title = $record->meta_title;
+    $this->meta_keywords = $record->meta_keywords;
+    $this->meta_description = $record->meta_description;
+    $this->meta_tags = $record->meta_tags;
+    $this->page_schema = $record->page_schema;
+    $this->content = $record->content;
+    $this->image = $record->image;
+    $this->image_alt = $record->image_alt;
+    $this->image_left = $record->image_left;
+    $this->image_left_alt = $record->image_left_alt;
+    $this->section_content_left = $record->section_content_left;
+    $this->image_right = $record->image_right;
+    $this->image_right_alt = $record->image_right_alt;
+    $this->section_content_right = $record->section_content_right;
+    $this->faqs = $record->faqs;
 
-   public function save() 
+    $this->showFormModal = true;
+}
+
+   public function save()
     {
         // ✅ Ab validation rules exist karte hain
         $this->validate();
 
         $data = [];
-        foreach ($this->formFieldNames() as $field) { 
+        foreach ($this->formFieldNames() as $field) {
             // Empty string ko null mein convert karo (optional)
-            $data[$field] = ($this->$field !== '') ? $this->$field : null; 
+            $data[$field] = ($this->$field !== '') ? $this->$field : null;
         }
         if (empty($data['slug'])) {
             $data['slug'] = Str::slug($data['focus_keyword'] ?? '');
@@ -168,23 +191,43 @@ class ProgramaticSeo extends Component
         ProgramaticSeoModel::findOrFail($this->editingId)->update($data);
         $this->showFormModal = false;
         session()->flash('success', 'Record updated successfully!');
-        
+
         $this->resetPage();
     }
 
 
     public function confirmDelete($id) { $this->deletingId = $id; $this->showDeleteModal = true; }
 
-    public function deleteRecord() {
+   public function deleteRecord() 
+{
+    if ($this->deletingId) {
+        // Record dhoond kar delete karein
         ProgramaticSeoModel::findOrFail($this->deletingId)->delete();
         $this->showDeleteModal = false;
-        session()->flash('success', 'Deleted!');
+        $this->deletingId = null;
+        session()->flash('success', 'Record deleted successfully!');
+        $this->resetPage(); 
     }
+}
 
     public function sortBy($field) {
         $this->sortDirection = ($this->sortField === $field && $this->sortDirection === 'asc') ? 'desc' : 'asc';
         $this->sortField = $field;
     }
+
+
+    public function closeModal()
+{
+    $this->showFormModal = false;
+    $this->editingId = null;
+    $this->reset([
+        'focus_keyword', 'title', 'slug', 'h1_heading', 'meta_title', 
+        'meta_keywords', 'meta_description', 'meta_tags', 'page_schema', 
+        'content', 'image', 'image_alt', 'image_left', 'image_left_alt', 
+        'section_content_left', 'image_right', 'image_right_alt', 
+        'section_content_right', 'faqs'
+    ]);
+}
 
     public function render() {
         return view('livewire.admin.programatic-seo', [

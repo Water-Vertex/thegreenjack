@@ -53,11 +53,16 @@
                 <span class="material-icons text-2xl">assignment</span>
                 <span class="text-sm font-medium">Repair Requests</span>
             </a>
-            
-<a href="{{ route('admin.contacts') }}" wire:navigate class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/80 hover:text-white hover:bg-[#5C9F01]/40 transition-all duration-200 group">
-    <span class="material-icons text-2xl">contact_mail</span>
-    <span class="text-sm font-medium">Contacts</span>
-</a>
+
+            <a href="{{ route('admin.contacts') }}" wire:navigate class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/80 hover:text-white hover:bg-[#5C9F01]/40 transition-all duration-200 group">
+                <span class="material-icons text-2xl">contact_mail</span>
+                <span class="text-sm font-medium">Contacts</span>
+            </a>
+
+             <a href="{{ route('admin.blogs') }}" wire:navigate class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/80 hover:text-white hover:bg-[#5C9F01]/40 transition-all duration-200 group">
+                <span class="material-icons text-2xl">article</span>
+                <span class="text-sm font-medium">Blog</span>
+            </a>
 
             <!-- Banner -->
             <a href="" wire:navigate class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/80 hover:text-white hover:bg-[#5C9F01]/40 transition-all duration-200 group">
@@ -70,8 +75,6 @@
                 <span class="text-sm font-medium">Blog</span>
             </a>
 
-
-
             <!-- Site Content -->
             <a href="" wire:navigate class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/80 hover:text-white hover:bg-[#5C9F01]/40 transition-all duration-200 group">
                 <span class="material-icons text-2xl">web</span>
@@ -79,19 +82,24 @@
             </a>
 
             <!-- Site Settings -->
-            <a href="" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/80 hover:text-white hover:bg-[#5C9F01]/40 transition-all duration-200 group">
+            <a href="{{ route('admin.settings') }}" wire:navigate class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/80 hover:text-white hover:bg-[#5C9F01]/40 transition-all duration-200 group">
                 <span class="material-icons text-2xl">settings</span>
                 <span class="text-sm font-medium">Site Settings</span>
             </a>
-<!-- Programatic SEO -->
-<a href="{{ route('admin.programatic-seo') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/80 hover:text-white hover:bg-[#5C9F01]/40 transition-all duration-200 group">
-    <span class="material-icons text-2xl">travel_explore</span>
-    <span class="text-sm font-medium">Programatic SEO</span>
-</a>
 
+            <!-- SEO Settings -->
+            <a href="{{ route('admin.seo-settings') }}" wire:navigate class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/80 hover:text-white hover:bg-[#5C9F01]/40 transition-all duration-200 group">
+                <span class="material-icons text-2xl">manage_search</span>
+                <span class="text-sm font-medium">SEO Settings</span>
+            </a>
+
+            <a href="{{ route('admin.programatic-seo') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/80 hover:text-white hover:bg-[#5C9F01]/40 transition-all duration-200 group">
+                <span class="material-icons text-2xl">travel_explore</span>
+                <span class="text-sm font-medium">Programatic SEO</span>
+            </a>
 
             <!-- Pages -->
-            <a href="{{route('admin.pages')}}" wire:navigate class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/80 hover:text-white hover:bg-[#5C9F01]/40 transition-all duration-200 group">
+            <a href="{{ route('admin.pages') }}" wire:navigate class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/80 hover:text-white hover:bg-[#5C9F01]/40 transition-all duration-200 group">
                 <span class="material-icons text-2xl">description</span>
                 <span class="text-sm font-medium">Pages</span>
             </a>
@@ -101,7 +109,6 @@
 
 <!-- Required CSS for scrollbar -->
 <style>
-    /* Custom scrollbar for sidebar */
     .sidebar-scroll::-webkit-scrollbar {
         width: 4px;
     }
@@ -119,7 +126,6 @@
         background: rgba(255, 255, 255, 0.3);
     }
 
-    /* Rotate animation for dropdown icons */
     .rotate-180 {
         transform: rotate(180deg);
     }
@@ -128,7 +134,6 @@
 <!-- jQuery Script for Dropdown Functionality -->
 <script>
 $(document).ready(function() {
-    // Dropdown toggle functionality
     $('.dropdown-trigger').click(function(e) {
         e.stopPropagation();
 
@@ -136,13 +141,11 @@ $(document).ready(function() {
         var $content = $trigger.next('.dropdown-content');
         var $icon = $trigger.find('.dropdown-icon');
 
-        // Close other dropdowns
         $('.dropdown-content').not($content).slideUp(200, function() {
             $(this).addClass('hidden');
         });
         $('.dropdown-icon').not($icon).removeClass('rotate-180');
 
-        // Toggle current dropdown
         if ($content.hasClass('hidden')) {
             $content.removeClass('hidden').slideDown(200);
             $icon.addClass('rotate-180');
@@ -154,18 +157,15 @@ $(document).ready(function() {
         }
     });
 
-    // Active link highlighting
     var currentUrl = window.location.href;
     $('.dropdown-content a, a[href]').each(function() {
         if ($(this).attr('href') && currentUrl.indexOf($(this).attr('href')) !== -1) {
             $(this).addClass('bg-[#5C9F01] text-white');
-            // Expand parent dropdown if current link is inside dropdown
             $(this).closest('.dropdown-content').removeClass('hidden').show();
             $(this).closest('.dropdown-content').prev('.dropdown-trigger').find('.dropdown-icon').addClass('rotate-180');
         }
     });
 
-    // Close dropdowns when clicking outside (optional)
     $(document).click(function(e) {
         if (!$(e.target).closest('.dropdown-container').length) {
             $('.dropdown-content').slideUp(200, function() {

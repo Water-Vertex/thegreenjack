@@ -519,7 +519,47 @@
                             <h4 class="text-md font-semibold text-gray-900 mb-3">SEO Settings</h4>
 
                             <div class="space-y-4">
+
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                                        Focus Keyword
+                                        <span class="text-xs text-gray-500"></span>
+                                    </label>
+                                    <input
+                                        type="text"
+                                        wire:model="focus_keyword"
+                                        wire:keyup="analyzeSeo"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#5C9F01] focus:border-[#5C9F01]"
+                                        placeholder="e.g., organic cotton t-shirt"
+                                    >
+                                    <div class="mt-2 flex items-center justify-between">
+                                        <!-- <p class="text-xs text-gray-500">
+                                            <i class="fas fa-info-circle"></i>
+                                            This keyword will be used to optimize your product for search engines
+                                        </p> -->
+                                        @if(!empty($focus_keyword))
+                                            <span class="text-xs text-green-600 bg-green-100 px-2 py-1 rounded-full">
+                                                <i class="fas fa-check-circle"></i> Keyword set: {{ Str::limit($focus_keyword, 30) }}
+                                            </span>
+                                        @endif
+
+                                </div>
+<!-- Product Type Selection - Add this in Basic Information section after Manufacturer -->
+<div class="col-span-2">
+    <label class="block text-sm font-medium text-gray-700 mb-1">
+        Product Type
+        <span class="text-xs text-gray-500">(Optional)</span>
+    </label>
+    <select
+        wire:model="type"
+        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#5C9F01] focus:border-[#5C9F01]"
+    >
+        <option value="">Select Type</option>
+        <option value="featured"> Featured</option>
+        <option value="best_seller"> Best Seller</option>
+    </select>
+</div>
                                 <div>
+
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Meta Title</label>
                                     <input
                                         type="text"
