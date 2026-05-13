@@ -26,6 +26,7 @@ use App\Livewire\User\ShopDetails;
 use App\Livewire\Admin\Settings;
 use App\Livewire\Admin\Contacts;
 use App\Livewire\Admin\PageMeta;
+use App\Livewire\Admin\PrintingRequest;
 use App\Livewire\Admin\ProgramaticSeo;
 use App\Livewire\User\ProgramaticSeo as ProgramaticSeoUser;
 use Illuminate\Support\Facades\Route;
@@ -59,6 +60,7 @@ Route::middleware(['auth','preventback'])->prefix('admin')->name('admin.')->grou
     Route::get('/settings', Settings::class)->name('settings');
     Route::get('/seo-settings', PageMeta::class)->name('seo-settings');
     Route::get('/contacts', Contacts::class)->name('contacts');
+    Route::get('/printing-requests', PrintingRequest::class)->name('printing-requests');
     Route::get('/blogs', Blog::class)->name('blogs');
     Route::get('/programatic-seo', ProgramaticSeo::class)->name('programatic-seo');
 

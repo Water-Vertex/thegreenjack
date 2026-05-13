@@ -289,155 +289,153 @@
                     High‑impact printing & strategic marketing — from business essentials to bold campaigns.
                 </p>
             </div>
+            <!-- Success Message -->
+                    @if($successMessage)
+                        <div class="mt-4 text-center bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg">
+                            ✅ {{ $successMessage }}
+                        </div>
+                    @endif
 
             <!-- Services Grid: 8 distinct printing & marketing services with matching icons -->
             <div class="services-grid">
-
-                <!-- 1. Document Printing -->
-                <div class="print-card">
-                    <div class="icon-circle">
-                        <i class="fas fa-file-alt"></i>
-                    </div>
-                    <h3 class="service-title"><a href="#">Document Printing</a></h3>
-                    <p class="card-description">
-                        Crisp, professional documents — reports, manuals, proposals. Fast turnaround & premium paper options.
-                    </p>
-                    <a href="#" class="learn-link">Discover printing <i class="fas fa-arrow-right"></i></a>
+            @foreach($services as $serviceName => $serviceDesc)
+            <div class="print-card" wire:key="{{ $loop->index }}">
+                <div class="icon-circle">
+                    @switch($serviceName)
+                        @case('Document Printing') <i class="fas fa-file-alt"></i> @break
+                        @case('Business Cards') <i class="fas fa-id-card"></i> @break
+                        @case('Signs, Banners & Posters') <i class="fas fa-sign"></i> @break
+                        @case('Marketing Materials') <i class="fas fa-chart-line"></i> @break
+                        @case('Cards & Invitations') <i class="fas fa-envelope-open-text"></i> @break
+                        @case('Labels & Stickers') <i class="fas fa-tag"></i> @break
+                        @case('Envelope & Stationery') <i class="fas fa-envelope"></i> @break
+                        @case('Photo Gifts & Business Solutions') <i class="fas fa-gift"></i> @break
+                        @default <i class="fas fa-print"></i>
+                    @endswitch
                 </div>
-
-                <!-- 2. Business Cards -->
-                <div class="print-card">
-                    <div class="icon-circle">
-                        <i class="fas fa-id-card"></i>
-                    </div>
-                    <h3 class="service-title"><a href="#">Business Cards</a></h3>
-                    <p class="card-description">
-                        Leave a lasting impression with premium business cards — matt, gloss, foil, or eco-friendly finishes.
-                    </p>
-                    <a href="#" class="learn-link">Customize now <i class="fas fa-arrow-right"></i></a>
-                </div>
-
-                <!-- 3. Signs, Banners, & Posters -->
-                <div class="print-card">
-                    <div class="icon-circle">
-                        <i class="fas fa-sign"></i>
-                    </div>
-                    <h3 class="service-title"><a href="#">Signs, Banners & Posters</a></h3>
-                    <p class="card-description">
-                        Indoor & outdoor signage, vinyl banners, pull-up displays — high visibility for events & retail.
-                    </p>
-                    <a href="#" class="learn-link">Get a quote <i class="fas fa-arrow-right"></i></a>
-                </div>
-
-                <!-- 4. Marketing Materials -->
-                <div class="print-card">
-                    <div class="icon-circle">
-                        <i class="fas fa-chart-line"></i>
-                    </div>
-                    <h3 class="service-title"><a href="#">Marketing Materials</a></h3>
-                    <p class="card-description">
-                        Flyers, brochures, catalogs, and door hangers — data-driven designs that convert leads.
-                    </p>
-                    <a href="#" class="learn-link">Boost your brand <i class="fas fa-arrow-right"></i></a>
-                </div>
-
-                <!-- 5. Cards & Invitations -->
-                <div class="print-card">
-                    <div class="icon-circle">
-                        <i class="fas fa-envelope-open-text"></i>
-                    </div>
-                    <h3 class="service-title"><a href="#">Cards & Invitations</a></h3>
-                    <p class="card-description">
-                        Elegant wedding invites, greeting cards, thank you notes — custom foil stamping + letterpress available.
-                    </p>
-                    <a href="#" class="learn-link">Design yours <i class="fas fa-arrow-right"></i></a>
-                </div>
-
-                <!-- 6. Labels & Stickers -->
-                <div class="print-card">
-                    <div class="icon-circle">
-                        <i class="fas fa-tag"></i>
-                    </div>
-                    <h3 class="service-title"><a href="#">Labels & Stickers</a></h3>
-                    <p class="card-description">
-                        Waterproof, kiss-cut, or roll labels — perfect for packaging, branding, and promotional giveaways.
-                    </p>
-                    <a href="#" class="learn-link">Create stickers <i class="fas fa-arrow-right"></i></a>
-                </div>
-
-                <!-- 7. Envelope & Stationery -->
-                <div class="print-card">
-                    <div class="icon-circle">
-                        <i class="fas fa-envelope"></i>
-                    </div>
-                    <h3 class="service-title"><a href="#">Envelope & Stationery</a></h3>
-                    <p class="card-description">
-                        Custom envelopes, letterheads, notepads — elevate corporate correspondence with sophistication.
-                    </p>
-                    <a href="#" class="learn-link">Shop stationery <i class="fas fa-arrow-right"></i></a>
-                </div>
-
-                <!-- 8. Photo Gifts & Business Solutions -->
-                <div class="print-card">
-                    <div class="icon-circle">
-                        <i class="fas fa-gift"></i>
-                    </div>
-                    <h3 class="service-title"><a href="#">Photo Gifts & Business Solutions</a></h3>
-                    <p class="card-description">
-                        Photo albums, calendars, mugs, and B2B bulk solutions — branded corporate gifts & promotional merch.
-                    </p>
-                    <a href="#" class="learn-link">Gift ideas <i class="fas fa-arrow-right"></i></a>
-                </div>
+                <h3 class="service-title"><a href="javascript:void(0)" wire:click.prevent="openModal('{{ $serviceName }}', '{{ addslashes($serviceDesc) }}')">{{ $serviceName }}</a></h3>
+                <p class="card-description">{{ Str::limit($serviceDesc, 100) }}</p>
+                <a href="javascript:void(0)" class="learn-link" wire:click.prevent="openModal('{{ $serviceName }}', '{{ addslashes($serviceDesc) }}')">Get Quote <i class="fas fa-arrow-right"></i></a>
             </div>
+            @endforeach
+        </div>
 
-            <!-- Marketing Services sub-section -->
-            <div class="mt-8 grid md:grid-cols-2 gap-8 items-center bg-white/60 backdrop-blur-sm rounded-3xl p-6 md:p-8 border border-[#5B9F01]/10 shadow-sm" style="margin-top: 40px;">
-                <div>
-                    <div class="flex items-center gap-2 mb-3">
-                        <i class="fas fa-chart-line text-[#5B9F01] text-xl"></i>
-                        <span class="text-[#5B9F01] font-bold text-sm uppercase tracking-wider">Marketing muscle</span>
-                    </div>
-                    <h3 class="text-2xl font-bold text-gray-800">Beyond print — full funnel marketing</h3>
-                    <p class="text-gray-600 mt-3 leading-relaxed">
-                        From SEO-optimized catalogs to direct mail campaigns, we blend traditional printing with modern marketing strategies.
-                        Get branded assets, campaign management, and analytics-driven collateral.
-                    </p>
-                    <ul class="mt-4 space-y-2">
-                        <li class="flex items-center gap-2"><i class="fas fa-check-circle text-[#5B9F01] text-sm"></i><span>Variable data printing & personalization</span></li>
-                        <li class="flex items-center gap-2"><i class="fas fa-check-circle text-[#5B9F01] text-sm"></i><span>QR code integration + tracking</span></li>
-                        <li class="flex items-center gap-2"><i class="fas fa-check-circle text-[#5B9F01] text-sm"></i><span>Full-service creative & copywriting</span></li>
-                    </ul>
-                    <a href="#" class="inline-flex items-center gap-2 mt-5 text-[#5B9F01] font-semibold border-b border-[#5B9F01]/40 hover:gap-3 transition-all">Explore marketing services →</a>
-                </div>
-                <div class="flex justify-center md:justify-end">
-                    <div class="grid grid-cols-2 gap-2 w-full max-w-xs">
-                        <div class="bg-white p-3 rounded-xl shadow-sm text-center border border-gray-100">
-                            <i class="fas fa-envelope-open-text text-2xl text-[#5B9F01]"></i>
-                            <p class="text-xs font-medium mt-1">Direct Mail</p>
-                        </div>
-                        <div class="bg-white p-3 rounded-xl shadow-sm text-center border border-gray-100">
-                            <i class="fas fa-ad text-2xl text-[#5B9F01]"></i>
-                            <p class="text-xs font-medium mt-1">Digital Sync</p>
-                        </div>
-                        <div class="bg-white p-3 rounded-xl shadow-sm text-center border border-gray-100">
-                            <i class="fas fa-palette text-2xl text-[#5B9F01]"></i>
-                            <p class="text-xs font-medium mt-1">Creative Studio</p>
-                        </div>
-                        <div class="bg-white p-3 rounded-xl shadow-sm text-center border border-gray-100">
-                            <i class="fas fa-store text-2xl text-[#5B9F01]"></i>
-                            <p class="text-xs font-medium mt-1">Retail Ready</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
-            <!-- CTA Button -->
-            <div class="text-center mt-12">
-                <a href="#" class="btn-primary">
-                    Discover All Printing & Marketing Services <i class="fas fa-arrow-right text-sm"></i>
-                </a>
-                <p class="text-xs text-gray-400 mt-4">Volume discounts • Free shipping on orders $150+ • Same-day in-store</p>
-            </div>
         </div>
     </section>
+
+    <!-- Modal Structure -->
+<!-- Modal -->
+    @if($showModal)
+    <div id="serviceModal" class="modal" style="display: flex; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 9999; align-items: center; justify-content: center; padding: 16px; box-sizing: border-box;">
+        <div class="modal-content" style="background: white; max-width: 600px; width: 100%; margin: auto; border-radius: 32px; padding: 28px 24px; position: relative; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.3); animation: modalFadeIn 0.3s ease; max-height: 90vh; overflow-y: auto; box-sizing: border-box;">
+
+            <button type="button" class="modal-close" wire:click="closeModal" style="position: sticky; top: 0; float: right; background: white; border: none; font-size: 28px; cursor: pointer; color: #999; transition: 0.2s; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 50%; margin: -8px -8px 0 0;">&times;</button>
+            <div style="clear: both;"></div>
+
+            <div class="modal-header" style="margin-bottom: 20px; padding-right: 20px;">
+                <h3 style="font-family: 'Poppins', sans-serif; font-size: 1.6rem; color: #1E2A2F; margin: 0 0 8px 0; line-height: 1.3; word-break: break-word;">{{ $modalServiceTitle }}</h3>
+                <div style="width: 50px; height: 3px; background: #5B9F01; border-radius: 4px;"></div>
+            </div>
+
+            <div class="modal-body">
+                <p style="color: #5b6b6f; line-height: 1.5; margin-bottom: 24px; font-size: 0.95rem;">{{ $modalServiceDesc }}</p>
+
+                <form wire:submit.prevent="submitInquiry" style="width: 100%;">
+                    <div style="margin-bottom: 16px;">
+                        <label style="display: block; font-weight: 600; color: #1f2a2e; margin-bottom: 6px; font-size: 0.9rem;">Full Name *</label>
+                        <input type="text" wire:model="name" style="width: 100%; padding: 12px 14px; border: 1px solid #ddd; border-radius: 16px; font-size: 1rem; transition: 0.2s; outline: none; box-sizing: border-box;">
+                        @error('name') <span style="color: #d9534f; font-size: 0.8rem; margin-top: 4px; display: block;">{{ $message }}</span> @enderror
+                    </div>
+
+                    <div style="margin-bottom: 16px;">
+                        <label style="display: block; font-weight: 600; color: #1f2a2e; margin-bottom: 6px; font-size: 0.9rem;">Email Address *</label>
+                        <input type="email" wire:model="email" style="width: 100%; padding: 12px 14px; border: 1px solid #ddd; border-radius: 16px; font-size: 1rem; transition: 0.2s; outline: none; box-sizing: border-box;">
+                        @error('email') <span style="color: #d9534f; font-size: 0.8rem; margin-top: 4px; display: block;">{{ $message }}</span> @enderror
+                    </div>
+
+                    <div style="margin-bottom: 16px;">
+                        <label style="display: block; font-weight: 600; color: #1f2a2e; margin-bottom: 6px; font-size: 0.9rem;">Phone Number</label>
+                        <input type="tel" wire:model="phone" style="width: 100%; padding: 12px 14px; border: 1px solid #ddd; border-radius: 16px; font-size: 1rem; transition: 0.2s; outline: none; box-sizing: border-box;">
+                        @error('phone') <span style="color: #d9534f; font-size: 0.8rem; margin-top: 4px; display: block;">{{ $message }}</span> @enderror
+                    </div>
+
+                    <div style="margin-bottom: 20px;">
+                        <label style="display: block; font-weight: 600; color: #1f2a2e; margin-bottom: 6px; font-size: 0.9rem;">Service *</label>
+                        <input type="text" wire:model="service" readonly style="width: 100%; padding: 12px 14px; background: #f5f5f5; border: 1px solid #e0e0e0; border-radius: 16px; font-size: 0.95rem; color: #2c3e2f; font-weight: 500; box-sizing: border-box; cursor: default;">
+                        @error('service') <span style="color: #d9534f; font-size: 0.8rem; margin-top: 4px; display: block;">{{ $message }}</span> @enderror
+                    </div>
+
+                    <div style="margin-bottom: 24px;">
+                        <label style="display: block; font-weight: 600; color: #1f2a2e; margin-bottom: 6px; font-size: 0.9rem;">Message / Requirements</label>
+                        <textarea wire:model="message" rows="4" placeholder="Tell us about your project, quantity, or deadline..." style="width: 100%; padding: 12px 14px; border: 1px solid #ddd; border-radius: 20px; font-family: inherit; resize: vertical; font-size: 0.9rem; box-sizing: border-box;"></textarea>
+                        @error('message') <span style="color: #d9534f; font-size: 0.8rem; margin-top: 4px; display: block;">{{ $message }}</span> @enderror
+                    </div>
+
+                    <button type="submit" style="background: #5B9F01; color: white; border: none; padding: 14px 28px; border-radius: 50px; font-weight: 700; font-size: 1rem; cursor: pointer; width: 100%; transition: 0.2s; box-shadow: 0 4px 12px rgba(91,159,1,0.3);">
+    <span wire:loading.remove wire:target="submitInquiry">Send Inquiry →</span>
+    <span wire:loading wire:target="submitInquiry">Sending...</span>
+</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    @endif
+
+    <style>
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: scale(0.96); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .modal input:focus, .modal textarea:focus {
+            border-color: #5B9F01;
+            box-shadow: 0 0 0 3px rgba(91,159,1,0.1);
+            outline: none;
+        }
+
+        .modal-close:hover {
+            color: #5B9F01 !important;
+            transform: scale(1.1);
+            background: #f5f5f5;
+        }
+
+        @media (max-width: 640px) {
+            .modal-content {
+                padding: 20px 16px !important;
+                max-height: 85vh !important;
+            }
+
+            .modal-header h3 {
+                font-size: 1.4rem !important;
+            }
+
+            .modal input, .modal textarea {
+                font-size: 16px !important;
+            }
+        }
+    </style>
+
+    @push('scripts')
+    <script>
+        document.addEventListener('livewire:initialized', () => {
+            Livewire.on('show-modal', () => {
+                document.body.style.overflow = 'hidden';
+            });
+
+            Livewire.on('hide-modal', () => {
+                document.body.style.overflow = '';
+            });
+
+            Livewire.on('show-success', (message) => {
+                alert(message[0]);
+            });
+
+            Livewire.on('show-error', (message) => {
+                alert(message[0]);
+            });
+        });
+    </script>
+    @endpush
+
 </div>
