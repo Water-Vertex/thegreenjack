@@ -30,6 +30,9 @@ use App\Livewire\Admin\Settings;
 use App\Livewire\Admin\Contacts;
 use App\Livewire\Admin\PageMeta;
 use App\Livewire\Admin\ProgramaticSeo;
+use App\Livewire\Admin\Orders;
+use App\Livewire\User\Blogs as UserBlog;
+use App\Livewire\User\ShopByCategory;
 use App\Livewire\User\ProgramaticSeo as ProgramaticSeoUser;
 use Illuminate\Support\Facades\Route;
 
@@ -68,5 +71,6 @@ Route::middleware(['auth','preventback'])->prefix('admin')->name('admin.')->grou
 
     
     Route::get('/programatic-seo', ProgramaticSeo::class)->name('programatic-seo');
+    Route::get('/orders', Orders::class)->name('orders');
 
 });
