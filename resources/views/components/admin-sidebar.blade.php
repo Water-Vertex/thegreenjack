@@ -89,6 +89,14 @@
                 <span class="material-icons text-2xl">description</span>
                 <span class="text-sm font-medium">Pages</span>
             </a>
+
+            <a href="{{ route('admin.sitemap') }}" 
+   wire:navigate 
+   class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/80 hover:text-white hover:bg-[#5C9F01]/40 transition-all duration-200 group">
+
+    <span class="material-icons text-2xl">sitemap</span>
+    <span class="text-sm font-medium">Sitemap</span>
+</a>
         </nav>
     </div>
 </aside>
