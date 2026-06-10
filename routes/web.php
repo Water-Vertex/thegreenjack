@@ -23,13 +23,19 @@ use App\Livewire\User\PrintingMarketing;
 use App\Livewire\User\Products as UserProducts;
 use App\Livewire\User\Repair;
 use App\Livewire\User\Shop;
+use App\Livewire\User\ProgramaticSeoPage;
 use App\Livewire\User\ShopDetails;
+use App\Livewire\User\BlogList;
+use App\Livewire\User\BlogDetail;
 use App\Livewire\Admin\Settings;
 use App\Livewire\Admin\Contacts;
 use App\Livewire\Admin\Series;
 use App\Livewire\Admin\PageMeta;
 use App\Livewire\Admin\PrintingRequest;
 use App\Livewire\Admin\ProgramaticSeo;
+use App\Livewire\Admin\Orders;
+use App\Livewire\User\Blogs as UserBlog;
+use App\Livewire\User\ShopByCategory;
 use App\Livewire\User\Blogs as UserBlog;
 use App\Livewire\User\ShopByCategory;
 use App\Livewire\User\BlogDetail;
@@ -51,6 +57,7 @@ Route::get('/product/{slug}',ShopDetails::class)->name('shop.details');
 Route::get('/category/{slug}',ShopByCategory::class)->name('shop.by.category');
 Route::get('/cart', Cart::class)->name('cart.page');
 Route::get('/checkout', Checkout::class)->name('checkout');
+Route::get('/blogs', BlogList::class)->name('blogs');
 Route::get('/blogs', UserBlog::class)->name('blogs');
 Route::get('/blog/{slug}', BlogDetail::class)->name('blog.detail');
 Route::get('/{slug}', ProgramaticSeoUser::class)->name('seo.show');
@@ -74,6 +81,9 @@ Route::middleware(['auth','preventback'])->prefix('admin')->name('admin.')->grou
     Route::get('/contacts', Contacts::class)->name('contacts');
     Route::get('/printing-requests', PrintingRequest::class)->name('printing-requests');
     Route::get('/blogs', Blog::class)->name('blogs');
+
+    
     Route::get('/programatic-seo', ProgramaticSeo::class)->name('programatic-seo');
+    Route::get('/orders', Orders::class)->name('orders');
 
 });

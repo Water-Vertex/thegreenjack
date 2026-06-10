@@ -149,6 +149,8 @@
                     <a href="#" class="py-3 px-5 text-gray-600 hover:text-[#5B9F01] font-semibold transition whitespace-nowrap">Finance</a>
                     <a href="{{route('blogs')}}" wire:navigate class="py-3 px-5 text-gray-700 font-semibold hover:text-[#5B9F01] border-b-2 border-transparent hover:border-[#5B9F01] transition whitespace-nowrap">Blogs</a>
                     <a href="{{ route('contact-us') }}" wire:navigate class="py-3 px-5 text-gray-600 hover:text-[#5B9F01] font-semibold transition whitespace-nowrap">Contact Us</a>
+
+                      <a href="{{ route('blogs') }}" wire:navigate class="py-3 px-5 text-gray-600 hover:text-[#5B9F01] font-semibold transition whitespace-nowrap">Blog</a>
                 </div>
 
                 <span class="hidden lg:inline-block text-sm text-gray-500 py-3 whitespace-nowrap"><i class="fas fa-truck"></i> Free Shipping on Orders $50+</span>
@@ -213,7 +215,7 @@
 
         <a href="#" class="block py-3 text-gray-600 border-b border-gray-200  hover:text-[#5B9F01]">Finance</a>
         <a href="{{ route('contact-us') }}" wire:navigate class="block py-3 text-gray-600 border-b border-gray-200 hover:text-[#5B9F01]">Contact Us</a>
-
+ <a href="{{ route('blogs') }}" wire:navigate class="block py-3 text-gray-600 border-b border-gray-200 font-semibold hover:text-[#5B9F01]">Blog</a>
         <!-- CTA Button -->
         <div class="mt-6 pt-4 border-t border-gray-200 ">
             <a href="#" class="block w-full text-center bg-[#5B9F01] text-white py-3 rounded-lg font-semibold hover:bg-[#4a7f01] transition">

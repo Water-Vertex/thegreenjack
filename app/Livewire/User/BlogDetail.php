@@ -34,4 +34,5 @@ class BlogDetail extends Component
             'relatedBlogs' => $relatedBlogs,
         ]);
     }
+
 }

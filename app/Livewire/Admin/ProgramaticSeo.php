@@ -144,12 +144,35 @@ class ProgramaticSeo extends Component
         return ['title', 'slug', 'meta_title', 'meta_description', 'meta_keywords', 'meta_tags', 'page_schema', 'focus_keyword', 'content', 'image', 'image_alt', 'h1_heading', 'faqs', 'section_content_left', 'section_content_right', 'image_left', 'image_right', 'image_left_alt', 'image_right_alt'];
     }
 
-    public function openEditModal($id) {
-        $record = ProgramaticSeoModel::findOrFail($id);
-        $this->editingId = $id;
-        foreach ($this->formFieldNames() as $field) { $this->$field = $record->$field ?? ''; }
-        $this->showFormModal = true;
-    }
+  public function openEditModal($id)
+{
+    $record = ProgramaticSeoModel::findOrFail($id);
+    
+    $this->editingId = $id;
+    
+    // Form fields ko populate karein
+    $this->focus_keyword = $record->focus_keyword;
+    $this->title = $record->title;
+    $this->slug = $record->slug;
+    $this->h1_heading = $record->h1_heading;
+    $this->meta_title = $record->meta_title;
+    $this->meta_keywords = $record->meta_keywords;
+    $this->meta_description = $record->meta_description;
+    $this->meta_tags = $record->meta_tags;
+    $this->page_schema = $record->page_schema;
+    $this->content = $record->content;
+    $this->image = $record->image;
+    $this->image_alt = $record->image_alt;
+    $this->image_left = $record->image_left;
+    $this->image_left_alt = $record->image_left_alt;
+    $this->section_content_left = $record->section_content_left;
+    $this->image_right = $record->image_right;
+    $this->image_right_alt = $record->image_right_alt;
+    $this->section_content_right = $record->section_content_right;
+    $this->faqs = $record->faqs;
+
+    $this->showFormModal = true;
+}
 
    public function save()
     {
@@ -175,16 +198,36 @@ class ProgramaticSeo extends Component
 
     public function confirmDelete($id) { $this->deletingId = $id; $this->showDeleteModal = true; }
 
-    public function deleteRecord() {
+   public function deleteRecord() 
+{
+    if ($this->deletingId) {
+        // Record dhoond kar delete karein
         ProgramaticSeoModel::findOrFail($this->deletingId)->delete();
         $this->showDeleteModal = false;
-        session()->flash('success', 'Deleted!');
+        $this->deletingId = null;
+        session()->flash('success', 'Record deleted successfully!');
+        $this->resetPage(); 
     }
+}
 
     public function sortBy($field) {
         $this->sortDirection = ($this->sortField === $field && $this->sortDirection === 'asc') ? 'desc' : 'asc';
         $this->sortField = $field;
     }
+
+
+    public function closeModal()
+{
+    $this->showFormModal = false;
+    $this->editingId = null;
+    $this->reset([
+        'focus_keyword', 'title', 'slug', 'h1_heading', 'meta_title', 
+        'meta_keywords', 'meta_description', 'meta_tags', 'page_schema', 
+        'content', 'image', 'image_alt', 'image_left', 'image_left_alt', 
+        'section_content_left', 'image_right', 'image_right_alt', 
+        'section_content_right', 'faqs'
+    ]);
+}
 
     public function render() {
         return view('livewire.admin.programatic-seo', [
