@@ -12,6 +12,9 @@ use Livewire\WithPagination;
 use Illuminate\Support\Str;
 use Livewire\WithFileUploads;
 use Livewire\Attributes\Layout;
+use App\Imports\ProductsImport;
+use Illuminate\Support\Facades\Log;
+use Maatwebsite\Excel\Facades\Excel;
 
 #[Layout('components.admin-layout')]
 class Products extends Component
@@ -23,19 +26,17 @@ class Products extends Component
     public $sortDirection = 'asc';
     public $perPage = 10;
 
-    // Form properties
     public $showForm = false;
-    public $formType = 'create'; // 'create' or 'edit'
+    public $formType = 'create';
     public $productId = null;
 
-    // Product fields
     public $name = '';
     public $slug = '';
     public $description = '';
     public $image;
     public $existingImage = null;
     public $price = 0;
-    public $discounted_price = 0;
+    public $discounted_price = null;
     public $stock = 0;
     public $is_active = true;
     public $upc = '';
@@ -52,244 +53,215 @@ class Products extends Component
     public $sub_category_id = '';
     public $focus_keyword = '';
     public $type = '';
-    // Product Images - For multiple file upload
-    public $galleryImages = []; // For temporary uploaded multiple images
-    public $existingGalleryImages = []; // For existing images from database
-    public $deletedImages = []; // Track images to delete
 
-    // SEO Analysis properties
+    public $galleryImages = [];
+    public $existingGalleryImages = [];
+
     public $seoScore = 0;
     public $seoMetrics = [];
+    public $subCategories;
 
-    // Dependent dropdown
-    public $subCategories = [];
+    public $excelFile = null;
+    public $showImportModal = false;
 
     protected $queryString = [
         'search' => ['except' => ''],
         'sortField' => ['except' => 'name'],
         'sortDirection' => ['except' => 'asc'],
-        'perPage' => ['except' => 10]
+        'perPage' => ['except' => 10],
     ];
 
-    protected $rules = [
-        'name' => 'required|string|max:255',
-        'slug' => 'nullable|string|max:255|unique:products,slug',
-        'description' => 'nullable|string',
-        'image' => 'nullable|image|max:2048',
-        'galleryImages.*' => 'nullable|image|max:2048',
-        'price' => 'required|numeric|min:0',
-        'discounted_price' => 'nullable|numeric|min:0',
-        'stock' => 'required|integer|min:0',
-        'is_active' => 'boolean',
-        'upc' => 'nullable|string|max:50',
-        'sku' => 'nullable|string|max:100',
-        'asin' => 'nullable|string|max:50',
-        'manufacturer' => 'nullable|string|max:255',
-        'moq' => 'nullable|integer|min:1',
-        'meta_description' => 'nullable|string',
-        'meta_title' => 'nullable|string|max:255',
-        'meta_keywords' => 'nullable|string',
-        'meta_tags' => 'nullable|string',
-        'page_schemas' => 'nullable|string',
-        'category_id' => 'nullable|exists:categories,id',
-        'sub_category_id' => 'nullable|exists:sub_categories,id',
-        'type' => 'nullable|in:featured,best_seller',
-
-    ];
+    protected function rules()
+    {
+        return [
+            'name' => 'required|string|max:255',
+            'slug' => 'nullable|string|max:255|unique:products,slug,' . $this->productId,
+            'description' => 'nullable|string',
+            'image' => 'nullable|image|max:2048',
+            'galleryImages.*' => 'nullable|image|max:2048',
+            'price' => 'required|numeric|min:0',
+            'discounted_price' => 'nullable|numeric|min:0',
+            'stock' => 'required|integer|min:0',
+            'is_active' => 'boolean',
+            'upc' => 'nullable|string|max:50',
+            'sku' => 'nullable|string|max:100',
+            'asin' => 'nullable|string|max:50',
+            'manufacturer' => 'nullable|string|max:255',
+            'moq' => 'nullable|integer|min:1',
+            'meta_description' => 'nullable|string',
+            'meta_title' => 'nullable|string|max:255',
+            'meta_keywords' => 'nullable|string',
+            'meta_tags' => 'nullable|string',
+            'page_schemas' => 'nullable|string',
+            'category_id' => 'nullable|exists:categories,id',
+            'sub_category_id' => 'nullable|exists:sub_categories,id',
+            'focus_keyword' => 'nullable|string|max:255',
+            'type' => 'nullable|in:featured,best_seller',
+        ];
+    }
 
     public function mount()
     {
-        $this->resetForm();
         $this->subCategories = collect();
-    }
-
-    public function resetForm()
-    {
-        $this->reset([
-            'showForm', 'formType', 'productId', 'name', 'slug', 'description',
-            'image', 'existingImage', 'price', 'discounted_price', 'stock',
-            'is_active', 'upc', 'sku', 'asin', 'manufacturer', 'moq',
-            'meta_title', 'meta_description', 'meta_keywords', 'meta_tags',
-            'page_schemas', 'category_id', 'sub_category_id', 'seoScore', 'seoMetrics',
-            'focus_keyword','type',
-            'galleryImages', 'deletedImages'
-        ]);
-        $this->subCategories = collect();
-        $this->galleryImages = [];
-        $this->existingGalleryImages = [];
-        $this->deletedImages = [];
-    }
-
-    public function updatedCategoryId($value)
-    {
-        if ($value) {
-            $this->subCategories = SubCategory::where('category_id', $value)
-                ->where('is_active', true)
-                ->orderBy('name')
-                ->get();
-        } else {
-            $this->subCategories = collect();
-            $this->sub_category_id = '';
-        }
-    }
-
-    public function updatedName()
-    {
-        if ($this->formType === 'create' || !$this->slug) {
-            $this->slug = Str::slug($this->name);
-        }
-        $this->analyzeSeo();
-    }
-
-    public function updatedPrice()
-    {
-        $this->analyzeSeo();
-    }
-
-    // Remove existing image from database
-    public function removeExistingImage($imageId, $imagePath)
-    {
-        $this->deletedImages[] = [
-            'id' => $imageId,
-            'path' => $imagePath
-        ];
-
-        // Remove from the existingGalleryImages array
-        $this->existingGalleryImages = array_filter($this->existingGalleryImages, function($img) use ($imageId) {
-            return $img['id'] != $imageId;
-        });
-
-        // Reindex the array
-        $this->existingGalleryImages = array_values($this->existingGalleryImages);
-    }
-
-    // Remove new uploaded image preview
-    public function removeNewImage($index)
-    {
-        unset($this->galleryImages[$index]);
-        $this->galleryImages = array_values($this->galleryImages);
-    }
-
-    public function analyzeSeo()
-    {
-        $this->seoMetrics = [];
-
-        // Analyze Product Name
-        $nameLength = strlen($this->name);
-        $this->seoMetrics[] = [
-            'name' => 'Product Name',
-            'status' => $nameLength >= 10 && $nameLength <= 70,
-            'message' => "{$nameLength}/70 chars",
-            'weight' => 15
-        ];
-
-        // Analyze Meta Title
-        $metaTitleLength = strlen($this->meta_title ?: $this->name);
-        $this->seoMetrics[] = [
-            'name' => 'Meta Title',
-            'status' => $metaTitleLength >= 10 && $metaTitleLength <= 60,
-            'message' => "{$metaTitleLength}/60 chars",
-            'weight' => 15
-        ];
-
-        // Analyze Meta Description
-        $metaDescLength = strlen($this->meta_description);
-        $this->seoMetrics[] = [
-            'name' => 'Meta Description',
-            'status' => $metaDescLength >= 50 && $metaDescLength <= 160,
-            'message' => "{$metaDescLength}/160 chars",
-            'weight' => 15
-        ];
-
-        // Analyze Description Content
-        $textContent = strip_tags($this->description);
-        $wordCount = str_word_count($textContent);
-        $this->seoMetrics[] = [
-            'name' => 'Description Length',
-            'status' => $wordCount >= 100,
-            'message' => "{$wordCount}/100+ words",
-            'weight' => 15
-        ];
-
-        // Analyze Price
-        $hasPrice = $this->price > 0;
-        $this->seoMetrics[] = [
-            'name' => 'Product Price',
-            'status' => $hasPrice,
-            'message' => $hasPrice ? '$' . number_format($this->price, 2) : 'Missing',
-            'weight' => 10
-        ];
-
-        // Analyze SKU/UPC
-        $hasIdentifier = !empty($this->sku) || !empty($this->upc);
-        $this->seoMetrics[] = [
-            'name' => 'Product Identifier',
-            'status' => $hasIdentifier,
-            'message' => $hasIdentifier ? 'SKU/UPC added' : 'Missing SKU/UPC',
-            'weight' => 10
-        ];
-
-        // Analyze Stock
-        $this->seoMetrics[] = [
-            'name' => 'Stock Status',
-            'status' => $this->stock > 0,
-            'message' => $this->stock > 0 ? "{$this->stock} in stock" : 'Out of stock',
-            'weight' => 10
-        ];
-
-        // Analyze Category
-        $hasCategory = !empty($this->category_id);
-        $this->seoMetrics[] = [
-            'name' => 'Category Assignment',
-            'status' => $hasCategory,
-            'message' => $hasCategory ? 'Assigned' : 'Not assigned',
-            'weight' => 10
-        ];
-
-        // Calculate overall score
-        $this->calculateSeoScore();
-    }
-
-    private function calculateSeoScore()
-    {
-        $totalWeight = 0;
-        $achievedWeight = 0;
-
-        foreach ($this->seoMetrics as $metric) {
-            $totalWeight += $metric['weight'];
-            if ($metric['status']) {
-                $achievedWeight += $metric['weight'];
-            }
-        }
-
-        $this->seoScore = $totalWeight > 0 ?
-            round(($achievedWeight / $totalWeight) * 100) : 0;
-    }
-
-    public function sortBy($field)
-    {
-        if ($this->sortField === $field) {
-            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
-        } else {
-            $this->sortField = $field;
-            $this->sortDirection = 'asc';
-        }
     }
 
     public function create()
     {
         $this->resetForm();
-        $this->formType = 'create';
         $this->showForm = true;
+        $this->formType = 'create';
+        $this->is_active = true;
+    }
+
+    public function resetForm()
+    {
+        $this->reset([
+            'showForm',
+            'formType',
+            'productId',
+            'name',
+            'slug',
+            'description',
+            'image',
+            'existingImage',
+            'price',
+            'discounted_price',
+            'stock',
+            'is_active',
+            'upc',
+            'sku',
+            'asin',
+            'manufacturer',
+            'moq',
+            'meta_title',
+            'meta_description',
+            'meta_keywords',
+            'meta_tags',
+            'page_schemas',
+            'category_id',
+            'sub_category_id',
+            'focus_keyword',
+            'type',
+            'galleryImages',
+            'existingGalleryImages',
+            'seoScore',
+            'seoMetrics',
+        ]);
+
+        $this->formType = 'create';
+        $this->price = 0;
+        $this->stock = 0;
+        $this->is_active = true;
+        $this->subCategories = collect();
+
+        $this->resetErrorBag();
+        $this->resetValidation();
+    }
+
+    public function updatedName()
+    {
+        if ($this->formType === 'create') {
+            $this->slug = Str::slug($this->name);
+        }
+
         $this->analyzeSeo();
     }
 
-    public function edit($productId)
+    public function updatedCategoryId($value)
     {
-        $product = Product::findOrFail($productId);
+        $this->sub_category_id = '';
 
-        $this->formType = 'edit';
+        if ($value) {
+            $this->subCategories = SubCategory::where('category_id', $value)
+                ->orderBy('name')
+                ->get();
+        } else {
+            $this->subCategories = collect();
+        }
+
+        $this->analyzeSeo();
+    }
+
+    public function save()
+    {
+        $this->validate();
+
+        if (empty($this->slug)) {
+            $this->slug = Str::slug($this->name);
+        }
+
+        $imagePath = $this->existingImage;
+
+        if ($this->image) {
+            if ($this->existingImage) {
+                Storage::disk('public')->delete($this->existingImage);
+            }
+
+            $imagePath = $this->image->store('products', 'public');
+        }
+
+        $data = [
+            'name' => $this->name,
+            'slug' => $this->slug,
+            'description' => $this->description,
+            'image' => $imagePath,
+            'price' => $this->price,
+            'discounted_price' => $this->discounted_price ?: null,
+            'stock' => $this->stock,
+            'is_active' => $this->is_active ? 1 : 0,
+            'upc' => $this->upc,
+            'sku' => $this->sku,
+            'asin' => $this->asin,
+            'manufacturer' => $this->manufacturer,
+            'moq' => $this->moq,
+            'meta_title' => $this->meta_title,
+            'meta_description' => $this->meta_description,
+            'meta_keywords' => $this->meta_keywords,
+            'meta_tags' => $this->meta_tags,
+            'page_schemas' => $this->page_schemas,
+            'category_id' => $this->category_id ?: null,
+            'sub_category_id' => $this->sub_category_id ?: null,
+            'focus_keyword' => $this->focus_keyword,
+            'type' => $this->type ?: null,
+        ];
+
+        if ($this->formType === 'edit' && $this->productId) {
+            $product = Product::findOrFail($this->productId);
+            $product->update($data);
+
+            session()->flash('success', 'Product updated successfully.');
+        } else {
+            $product = Product::create($data);
+
+            session()->flash('success', 'Product created successfully.');
+        }
+
+        if (!empty($this->galleryImages)) {
+            foreach ($this->galleryImages as $galleryImage) {
+                $path = $galleryImage->store('products/gallery', 'public');
+
+                ProductImage::create([
+                    'product_id' => $product->id,
+                    'image' => $path,
+                    'path' => $path,
+                ]);
+            }
+        }
+
+        $this->resetForm();
+        $this->resetPage();
+    }
+
+    public function edit($id)
+    {
+        $product = Product::with('images')->findOrFail($id);
+
+        $this->resetForm();
+
         $this->productId = $product->id;
+        $this->formType = 'edit';
+        $this->showForm = true;
+
         $this->name = $product->name;
         $this->slug = $product->slug;
         $this->description = $product->description;
@@ -297,7 +269,7 @@ class Products extends Component
         $this->price = $product->price;
         $this->discounted_price = $product->discounted_price;
         $this->stock = $product->stock;
-        $this->is_active = $product->is_active;
+        $this->is_active = (bool) $product->is_active;
         $this->upc = $product->upc;
         $this->sku = $product->sku;
         $this->asin = $product->asin;
@@ -313,118 +285,239 @@ class Products extends Component
         $this->focus_keyword = $product->focus_keyword;
         $this->type = $product->type;
 
-        // Load existing product gallery images
-        $productImages = ProductImage::where('product_id', $productId)->first();
-        if ($productImages && $productImages->images) {
-            $images = json_decode($productImages->images, true);
-            if (is_array($images)) {
-                $this->existingGalleryImages = [];
-                foreach ($images as $image) {
-                    $this->existingGalleryImages[] = [
-                        'id' => $productImages->id,
-                        'path' => $image
-                    ];
-                }
-            }
-        }
-
-        // Load subcategories if category selected
-        if ($this->category_id) {
-            $this->subCategories = SubCategory::where('category_id', $this->category_id)
-                ->where('is_active', true)
+        if ($product->category_id) {
+            $this->subCategories = SubCategory::where('category_id', $product->category_id)
                 ->orderBy('name')
                 ->get();
         }
 
-        $this->showForm = true;
+        $this->existingGalleryImages = $product->images->map(function ($image) {
+            return [
+                'id' => $image->id,
+                'path' => $image->image ?? $image->path,
+            ];
+        })->toArray();
+
         $this->analyzeSeo();
     }
 
-    public function save()
-{
-    $rules = $this->rules;
-
-    // Make slug unique rule for update
-    if ($this->formType === 'edit' && $this->productId) {
-        $rules['slug'] = 'nullable|string|max:255|unique:products,slug,' . $this->productId;
-    }
-
-    $this->validate($rules);
-
-    // Generate slug if empty
-    if (empty($this->slug)) {
-        $this->slug = Str::slug($this->name);
-    }
-
-    $data = [
-        'name' => $this->name,
-        'slug' => $this->slug,
-        'description' => $this->description,
-        'price' => $this->price,
-        'discounted_price' => $this->discounted_price ?: 0,
-        'stock' => $this->stock,
-        'is_active' => $this->is_active,
-        'upc' => $this->upc,
-        'sku' => $this->sku,
-        'asin' => $this->asin,
-        'manufacturer' => $this->manufacturer,
-        'moq' => $this->moq,
-        'meta_title' => $this->meta_title,
-        'meta_description' => $this->meta_description,
-        'meta_keywords' => $this->meta_keywords,
-        'meta_tags' => $this->meta_tags,
-        'page_schemas' => $this->page_schemas,
-        'category_id' => $this->category_id ?: null,
-        'sub_category_id' => $this->sub_category_id ?: null,
-        'focus_keyword' => $this->focus_keyword,
-        'type' => $this->type,
-    ];
-
-    // Rest of the code remains same...
-}
-    public function delete($productId)
+    public function delete($id)
     {
-        $product = Product::findOrFail($productId);
+        $product = Product::with('images')->findOrFail($id);
 
-        // Delete main image
         if ($product->image) {
             Storage::disk('public')->delete($product->image);
         }
 
-        // Delete gallery images from product_images table
-        $productImages = ProductImage::where('product_id', $productId)->first();
-        if ($productImages && $productImages->images) {
-            $images = json_decode($productImages->images, true);
-            if (is_array($images)) {
-                foreach ($images as $imagePath) {
-                    Storage::disk('public')->delete($imagePath);
-                }
-            }
-            $productImages->delete();
+        foreach ($product->images as $image) {
+            Storage::disk('public')->delete($image->image ?? $image->path);
+            $image->delete();
         }
 
         $product->delete();
+
         session()->flash('success', 'Product deleted successfully.');
     }
 
-    public function toggleStatus($productId)
+    public function toggleStatus($id)
     {
-        $product = Product::findOrFail($productId);
-        $product->update(['is_active' => !$product->is_active]);
+        $product = Product::findOrFail($id);
+        $product->update([
+            'is_active' => !$product->is_active,
+        ]);
 
-        session()->flash('success', 'Product status updated successfully.');
+        session()->flash('success', 'Status updated successfully.');
+    }
+
+    public function removeNewImage($index)
+    {
+        unset($this->galleryImages[$index]);
+        $this->galleryImages = array_values($this->galleryImages);
+    }
+
+    public function removeExistingImage($id, $path)
+    {
+        $image = ProductImage::find($id);
+
+        if ($image) {
+            Storage::disk('public')->delete($path);
+            $image->delete();
+        }
+
+        $this->existingGalleryImages = collect($this->existingGalleryImages)
+            ->reject(fn ($item) => $item['id'] == $id)
+            ->values()
+            ->toArray();
+
+        session()->flash('success', 'Gallery image removed successfully.');
+    }
+
+    public function analyzeSeo()
+    {
+        $score = 0;
+        $metrics = [];
+
+        $metrics[] = [
+            'name' => 'Product Name',
+            'status' => !empty($this->name),
+            'message' => !empty($this->name) ? 'Good' : 'Missing',
+        ];
+
+        if (!empty($this->name)) $score += 20;
+
+        $metrics[] = [
+            'name' => 'Meta Title',
+            'status' => !empty($this->meta_title),
+            'message' => !empty($this->meta_title) ? 'Good' : 'Missing',
+        ];
+
+        if (!empty($this->meta_title)) $score += 20;
+
+        $metrics[] = [
+            'name' => 'Meta Description',
+            'status' => !empty($this->meta_description),
+            'message' => !empty($this->meta_description) ? 'Good' : 'Missing',
+        ];
+
+        if (!empty($this->meta_description)) $score += 20;
+
+        $metrics[] = [
+            'name' => 'Focus Keyword',
+            'status' => !empty($this->focus_keyword),
+            'message' => !empty($this->focus_keyword) ? 'Good' : 'Missing',
+        ];
+
+        if (!empty($this->focus_keyword)) $score += 20;
+
+        $metrics[] = [
+            'name' => 'Description',
+            'status' => !empty($this->description),
+            'message' => !empty($this->description) ? 'Good' : 'Missing',
+        ];
+
+        if (!empty($this->description)) $score += 20;
+
+        $this->seoScore = $score;
+        $this->seoMetrics = $metrics;
+    }
+
+    public function openImportModal()
+    {
+        $this->reset(['excelFile']);
+        $this->resetErrorBag();
+        $this->resetValidation();
+        $this->showImportModal = true;
+    }
+
+    public function closeImportModal()
+    {
+        $this->reset(['excelFile', 'showImportModal']);
+        $this->resetErrorBag();
+        $this->resetValidation();
+    }
+
+ public function importProducts()
+{
+    if (!$this->excelFile) {
+        session()->flash('error', 'Please select an Excel file to import');
+        return;
+    }
+
+    $extension = strtolower($this->excelFile->getClientOriginalExtension());
+    if (!in_array($extension, ['xlsx', 'xls', 'csv'])) {
+        session()->flash('error', 'The file must be an Excel file (.xlsx, .xls, or .csv)');
+        return;
+    }
+
+    try {
+        $import = new ProductsImport();
+        Excel::import($import, $this->excelFile->getRealPath());
+
+        $count = $import->getSuccessCount();
+        session()->flash('success', "Successfully imported {$count} products!");
+
+        $this->closeImportModal();
+        $this->resetPage();
+
+    } catch (\Exception $e) {
+        Log::error('Import error: ' . $e->getMessage());
+        session()->flash('error', 'Import failed: ' . $e->getMessage());
+    }
+}
+    public function downloadTemplate()
+    {
+        $headers = [
+            'name',
+            'description',
+            'stock',
+            'discounted_price',
+            'price',
+            'category_id',
+            'is_active',
+            'upc',
+            'asin',
+            'sku',
+            'manufacturer',
+            'moq',
+            'meta_title',
+            'meta_description',
+            'meta_keywords',
+            'meta_tags',
+            'page_schemas',
+            'sub_category_id',
+            'focus_keyword',
+            'type',
+        ];
+
+        $callback = function () use ($headers) {
+            $file = fopen('php://output', 'w');
+
+            fprintf($file, chr(0xEF) . chr(0xBB) . chr(0xBF));
+            fputcsv($file, $headers);
+
+            fputcsv($file, [
+                'Premium Laptop',
+                'High-performance laptop',
+                '50',
+                '999.99',
+                '1299.99',
+                '1',
+                '1',
+                '123456789012',
+                'B08N5WRWNW',
+                'LAP-001',
+                'Dell',
+                '5',
+                'Premium Laptop - Best Deal',
+                'Buy premium laptop online',
+                'laptop, premium',
+                'premium-laptop',
+                '{"@context":"https://schema.org"}',
+                '1',
+                'premium laptop',
+                'featured',
+            ]);
+
+            fclose($file);
+        };
+
+        return response()->streamDownload($callback, 'product_import_template.csv', [
+            'Content-Type' => 'text/csv',
+        ]);
     }
 
     public function render()
     {
         $products = Product::with(['category', 'subCategory'])
             ->when($this->search, function ($query) {
-                $query->where('name', 'like', '%' . $this->search . '%')
-                      ->orWhere('description', 'like', '%' . $this->search . '%')
-                      ->orWhere('sku', 'like', '%' . $this->search . '%')
-                      ->orWhere('upc', 'like', '%' . $this->search . '%')
-                      ->orWhere('manufacturer', 'like', '%' . $this->search . '%')
-                      ->orWhere('meta_title', 'like', '%' . $this->search . '%');
+                $query->where(function ($q) {
+                    $q->where('name', 'like', '%' . $this->search . '%')
+                        ->orWhere('description', 'like', '%' . $this->search . '%')
+                        ->orWhere('sku', 'like', '%' . $this->search . '%')
+                        ->orWhere('upc', 'like', '%' . $this->search . '%')
+                        ->orWhere('manufacturer', 'like', '%' . $this->search . '%')
+                        ->orWhere('meta_title', 'like', '%' . $this->search . '%');
+                });
             })
             ->orderBy($this->sortField, $this->sortDirection)
             ->paginate($this->perPage);
@@ -435,7 +528,7 @@ class Products extends Component
 
         return view('livewire.admin.products', [
             'products' => $products,
-            'categories' => $categories
+            'categories' => $categories,
         ]);
     }
 }

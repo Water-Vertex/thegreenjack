@@ -1,58 +1,54 @@
+@php
+    $settings = \App\Models\Setting::find(1);
+    @endphp
 <!-- Footer Start -->
 <footer class="bg-[#1a1f2b] text-gray-300">
-    <!-- Newsletter Section -->
-    <div class="bg-[#252b3b] py-10">
-        <div class="container mx-auto px-4 max-w-7xl">
-            <div class="flex flex-col md:flex-row items-center justify-between gap-6">
-                <div class="text-center md:text-left">
-                    <h3 class="text-white text-xl font-bold mb-1">Sign up to Newsletter</h3>
-                    <p class="text-gray-400 text-sm">...and receive $20 coupon for first shopping.</p>
-                </div>
-                <div class="flex w-full md:w-auto">
-                    <input type="email" placeholder="Email address" class="px-5 py-3 w-64 md:w-72 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-[#5B9F01] text-gray-800">
-                    <button class="bg-[#5B9F01] text-white px-6 py-3 rounded-r-lg hover:bg-[#4a7f01] transition font-semibold">Sign Up</button>
-                </div>
-            </div>
-        </div>
-    </div>
+   
 
     <!-- Main Footer -->
     <div class="container mx-auto px-4 max-w-7xl py-12">
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
-            
+
             <!-- Column 1: Brand & Contact -->
             <div>
-                <img src="{{asset('assets/images/logo/green-jack-white.png')}}" alt="Green Jack Logo">
-                
-                
+                <img src="@if($settings){{asset('storage/'.$settings->footer_logo)}}@endif" alt="Green Jack Logo">
+
+
             </div>
 
             <!-- Column 2: Find it Fast -->
             <div>
                 <h3 class="text-white font-semibold text-lg mb-4">Find it Fast</h3>
                 <ul class="space-y-2 text-sm">
-                    <li><a href="#" class="text-gray-400 hover:text-[#5B9F01] transition">Laptops & Computers</a></li>
-                    <li><a href="#" class="text-gray-400 hover:text-[#5B9F01] transition">Printers & Ink</a></li>
-                    <li><a href="#" class="text-gray-400 hover:text-[#5B9F01] transition">Cameras & Photography</a></li>
-                    <li><a href="#" class="text-gray-400 hover:text-[#5B9F01] transition">Software</a></li>
-                    <li><a href="#" class="text-gray-400 hover:text-[#5B9F01] transition">Smart Phones & Tablets</a></li>
-                    <li><a href="#" class="text-gray-400 hover:text-[#5B9F01] transition">Office Supplies</a></li>
-                    <li><a href="#" class="text-gray-400 hover:text-[#5B9F01] transition">Video Games & Consoles</a></li>
-                    <li><a href="#" class="text-gray-400 hover:text-[#5B9F01] transition">Computer Components</a></li>
+                     @php
+                                    $pages = \App\Models\Page::where('page_category', 'device_repair')->get();
+                                @endphp
+                                @foreach($pages as $page)
+                    <li><a href="{{ route('device-repair', ['slug' => $page->slug]) }}" wire:navigate class="text-gray-400 hover:text-[#5B9F01] transition">{{$page->title}}</a></li>
+                    @endforeach
+                    <!--<li><a href="#" class="text-gray-400 hover:text-[#5B9F01] transition">Printers & Ink</a></li>-->
+                    <!--<li><a href="#" class="text-gray-400 hover:text-[#5B9F01] transition">Cameras & Photography</a></li>-->
+                    <!--<li><a href="#" class="text-gray-400 hover:text-[#5B9F01] transition">Software</a></li>-->
+                    <!--<li><a href="#" class="text-gray-400 hover:text-[#5B9F01] transition">Smart Phones & Tablets</a></li>-->
+                    <!--<li><a href="#" class="text-gray-400 hover:text-[#5B9F01] transition">Office Supplies</a></li>-->
+                    <!--<li><a href="#" class="text-gray-400 hover:text-[#5B9F01] transition">Video Games & Consoles</a></li>-->
+                    <!--<li><a href="#" class="text-gray-400 hover:text-[#5B9F01] transition">Computer Components</a></li>-->
                 </ul>
             </div>
 
             <!-- Column 3: Customer Care -->
             <div>
-                <h3 class="text-white font-semibold text-lg mb-4">Customer Care</h3>
+                <h3 class="text-white font-semibold text-lg mb-4">Printing & Marketing</h3>
                 <ul class="space-y-2 text-sm">
-                    <li><a href="#" class="text-gray-400 hover:text-[#5B9F01] transition">My Account</a></li>
-                    <li><a href="#" class="text-gray-400 hover:text-[#5B9F01] transition">Order Tracking</a></li>
-                    <li><a href="#" class="text-gray-400 hover:text-[#5B9F01] transition">Wish List</a></li>
-                    <li><a href="#" class="text-gray-400 hover:text-[#5B9F01] transition">Customer Service</a></li>
-                    <li><a href="#" class="text-gray-400 hover:text-[#5B9F01] transition">Returns / Exchange</a></li>
-                    <li><a href="#" class="text-gray-400 hover:text-[#5B9F01] transition">FAQs</a></li>
-                    <li><a href="#" class="text-gray-400 hover:text-[#5B9F01] transition">Product Support</a></li>
+                    <li><a href="{{route('printing')}}" wire:navigate class="text-gray-400 hover:text-[#5B9F01] transition">Document Printing</a></li>
+                    <li><a href="{{route('printing')}}" wire:navigate class="text-gray-400 hover:text-[#5B9F01] transition">Business Cards</a></li>
+                    <li><a href="{{route('printing')}}" wire:navigate class="text-gray-400 hover:text-[#5B9F01] transition">Signs, Banners, & Posters</a></li>
+                    <li><a href="{{route('printing')}}" wire:navigate class="text-gray-400 hover:text-[#5B9F01] transition">Marketing Materials</a></li>
+                    <li><a href="{{route('printing')}}" wire:navigate class="text-gray-400 hover:text-[#5B9F01] transition">Cards & Invitations</a></li>
+                    <li><a href="{{route('printing')}}" wire:navigate class="text-gray-400 hover:text-[#5B9F01] transition">Label & Stickers</a></li>
+                    <li><a href="{{route('printing')}}" wire:navigate class="text-gray-400 hover:text-[#5B9F01] transition">Envelope & Stationery</a></li>
+                    <li><a href="{{route('printing')}}" wire:navigate class="text-gray-400 hover:text-[#5B9F01] transition">Photo Gifts</a></li>
+                    <li><a href="{{route('printing')}}" wire:navigate class="text-gray-400 hover:text-[#5B9F01] transition">Business Solutions</a></li>
                 </ul>
             </div>
 
@@ -85,7 +81,7 @@
                     <i class="fab fa-cc-amex text-3xl text-gray-400"></i>
                     <i class="fab fa-cc-paypal text-3xl text-gray-400"></i>
                     <i class="fab fa-cc-discover text-3xl text-gray-400"></i>
-                    
+
                 </div>
             </div>
         </div>

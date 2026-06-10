@@ -1,4 +1,12 @@
 <div>
+    @php
+    $settings = \App\Models\Setting::find(1);
+    @endphp
+    
+
+
+
+
     <!-- Breadcrumb Section -->
 <div class="breadcumb-wrapper relative bg-gray-100 py-16 md:py-20 overflow-hidden">
     <!-- Background Decoration -->
@@ -41,8 +49,8 @@
                     </div>
                 </div>
                 <span class="text-[#5B9F01] text-sm font-semibold uppercase tracking-wider block mb-2">OUR OFFICE LOCATION</span>
-                <h3 class="text-xl font-bold text-gray-800">Columbus, Ohio</h3>
-                <p class="text-gray-500 text-sm mt-2">123 Main Street, Columbus, OH 43215</p>
+                <h3 class="text-xl font-bold text-gray-800">@if($settings){{$settings->address}}@endif</h3>
+                <p class="text-gray-500 text-sm mt-2"></p>
             </div>
 
             <!-- Card 2 - Phone (Highlighted with Green Background) -->
@@ -58,9 +66,9 @@
                     </div>
                     <span class="text-white/80 text-sm font-semibold uppercase tracking-wider block mb-2">Have A Question?</span>
                     <h3 class="text-xl md:text-2xl font-bold text-white">
-                        <a href="tel:+6143325066" class="hover:underline">+6143325066</a>
+                        <a href="tel:+6143325066" class="hover:underline">@if($settings){{$settings->phone}}@endif</a>
                     </h3>
-                    <p class="text-white/70 text-sm mt-2">Mon-Sat: 9am - 7pm</p>
+                    <!--<p class="text-white/70 text-sm mt-2">Mon-Sat: 9am - 7pm</p>-->
                 </div>
             </div>
 
@@ -73,7 +81,7 @@
                 </div>
                 <span class="text-[#5B9F01] text-sm font-semibold uppercase tracking-wider block mb-2">Email Us On</span>
                 <h3 class="text-base md:text-lg font-bold text-gray-800 break-all">
-                    <a href="mailto:sales.thegreenjack@gmail.com" class="hover:text-[#5B9F01] transition">sales.thegreenjack@gmail.com</a>
+                    <a href="mailto:sales.thegreenjack@gmail.com" class="hover:text-[#5B9F01] transition">@if($settings){{$settings->email}}@endif</a>
                 </h3>
                 <p class="text-gray-500 text-sm mt-2">24/7 Online Support</p>
             </div>

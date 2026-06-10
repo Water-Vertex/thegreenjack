@@ -61,7 +61,7 @@ class Shop extends Component
     public function render()
     {
         $products = Product::with('category')->where('is_active', true)->get();
-        $categories = Category::where('is_active', true)->get();
+        $categories = Category::get();
         return view('livewire.user.shop', get_defined_vars());
     }
 }

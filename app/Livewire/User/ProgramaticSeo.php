@@ -15,7 +15,7 @@ class ProgramaticSeo extends Component
 
     public function mount(string $slug): void
     {
-        $this->record = ProgramaticSeoModel::lwhere('slug', $slug)->firstOrFail();
+        $this->record = ProgramaticSeoModel::where('slug', $slug)->firstOrFail();
         $this->parseFaqs();
     }
 

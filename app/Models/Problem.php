@@ -10,6 +10,8 @@ class Problem extends Model
     //
     protected $fillable = [
         'brand_model_id',
+        'brand_id',
+        'category_id',
         'name',
         'slug',
         'description',
@@ -24,7 +26,7 @@ class Problem extends Model
         return $this->belongsTo(BrandModel::class, 'brand_model_id');
     }
 
-   
+
     // Accessor for excerpt
     public function getExcerptAttribute()
     {

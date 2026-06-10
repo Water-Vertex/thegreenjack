@@ -35,10 +35,10 @@
                 </h1>
 
                 <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                    <a href="#" class="bg-[#5B9F01] hover:bg-[#4a7f01] text-white font-semibold px-8 py-3.5 rounded-full transition duration-300 inline-flex items-center justify-center gap-2 shadow-lg shadow-black/40">
+                    <a href="{{route('printing')}}" class="bg-[#5B9F01] hover:bg-[#4a7f01] text-white font-semibold px-8 py-3.5 rounded-full transition duration-300 inline-flex items-center justify-center gap-2 shadow-lg shadow-black/40">
                         Discover More <i class="fas fa-arrow-right"></i>
                     </a>
-                    <a href="#" class="backdrop-blur-md bg-white/10 hover:bg-white/20 border border-white/30 text-white font-semibold px-8 py-3.5 rounded-full transition duration-300 inline-flex items-center justify-center gap-2">
+                    <a href="{{route('contact-us')}}" class="backdrop-blur-md bg-white/10 hover:bg-white/20 border border-white/30 text-white font-semibold px-8 py-3.5 rounded-full transition duration-300 inline-flex items-center justify-center gap-2">
                         <i class="fas fa-phone"></i> Contact Us
                     </a>
                 </div>
@@ -159,11 +159,11 @@
                 <p class="text-gray-500 text-sm leading-relaxed">
                     When you need fast repairs for your iPhone, iPad, tablet, computer, game console, or any other device, trust the experts at The Green Jack.
                 </p>
-                <div class="mt-4">
-                    <a href="#" class="inline-flex items-center gap-1 text-[#5B9F01] text-sm font-medium hover:gap-2 transition-all">
-                        Learn More <i class="fas fa-arrow-right text-xs"></i>
-                    </a>
-                </div>
+                <!--<div class="mt-4">-->
+                <!--    <a href="#" class="inline-flex items-center gap-1 text-[#5B9F01] text-sm font-medium hover:gap-2 transition-all">-->
+                <!--        Learn More <i class="fas fa-arrow-right text-xs"></i>-->
+                <!--    </a>-->
+                <!--</div>-->
             </div>
 
             <!-- Service Card 2 - Buy a Devices -->
@@ -179,11 +179,11 @@
                 <p class="text-gray-500 text-sm leading-relaxed">
                     At The Green Jack, get the latest pre-owned devices without paying premium prices—iPhones, iPads, tablets, Samsung Galaxy devices.
                 </p>
-                <div class="mt-4">
-                    <a href="#" class="inline-flex items-center gap-1 text-[#5B9F01] text-sm font-medium hover:gap-2 transition-all">
-                        Learn More <i class="fas fa-arrow-right text-xs"></i>
-                    </a>
-                </div>
+                <!--<div class="mt-4">-->
+                <!--    <a href="#" class="inline-flex items-center gap-1 text-[#5B9F01] text-sm font-medium hover:gap-2 transition-all">-->
+                <!--        Learn More <i class="fas fa-arrow-right text-xs"></i>-->
+                <!--    </a>-->
+                <!--</div>-->
             </div>
 
             <!-- Service Card 3 - Trade & Sell -->
@@ -199,11 +199,11 @@
                 <p class="text-gray-500 text-sm leading-relaxed">
                     Let The Green Jack turn your old or damaged phone into cash and help you find a device you'll love. You've got options—sell or trade!
                 </p>
-                <div class="mt-4">
-                    <a href="#" class="inline-flex items-center gap-1 text-[#5B9F01] text-sm font-medium hover:gap-2 transition-all">
-                        Learn More <i class="fas fa-arrow-right text-xs"></i>
-                    </a>
-                </div>
+                <!--<div class="mt-4">-->
+                <!--    <a href="#" class="inline-flex items-center gap-1 text-[#5B9F01] text-sm font-medium hover:gap-2 transition-all">-->
+                <!--        Learn More <i class="fas fa-arrow-right text-xs"></i>-->
+                <!--    </a>-->
+                <!--</div>-->
             </div>
 
             <!-- Service Card 4 - Finance -->
@@ -219,17 +219,17 @@
                 <p class="text-gray-500 text-sm leading-relaxed">
                     Get the device you've always wanted today—for as low as $80 USD! Including iPhones, Samsung Galaxy devices, iPads, tablets, game systems.
                 </p>
-                <div class="mt-4">
-                    <a href="#" class="inline-flex items-center gap-1 text-[#5B9F01] text-sm font-medium hover:gap-2 transition-all">
-                        Learn More <i class="fas fa-arrow-right text-xs"></i>
-                    </a>
-                </div>
+                <!--<div class="mt-4">-->
+                <!--    <a href="#" class="inline-flex items-center gap-1 text-[#5B9F01] text-sm font-medium hover:gap-2 transition-all">-->
+                <!--        Learn More <i class="fas fa-arrow-right text-xs"></i>-->
+                <!--    </a>-->
+                <!--</div>-->
             </div>
         </div>
 
         <!-- Explore All Services Button -->
         <div class="text-center mt-12">
-            <a href="#" class="inline-flex items-center gap-2 bg-[#5B9F01] hover:bg-[#4a7f01] text-white font-semibold px-8 py-3 rounded-full transition duration-300 shadow-md hover:shadow-lg">
+            <a href="{{route('printing')}}" class="inline-flex items-center gap-2 bg-[#5B9F01] hover:bg-[#4a7f01] text-white font-semibold px-8 py-3 rounded-full transition duration-300 shadow-md hover:shadow-lg">
                 Explore All Services <i class="fas fa-arrow-right text-sm"></i>
             </a>
         </div>
@@ -303,9 +303,9 @@
                 </div>
 
                 <!-- Button -->
-                <a href="#" class="inline-flex items-center gap-2 bg-[#5B9F01] hover:bg-[#4a7f01] text-white font-semibold px-8 py-3 rounded-full transition duration-300 shadow-md hover:shadow-lg">
-                    Read More <i class="fas fa-arrow-right text-sm"></i>
-                </a>
+                <!--<a href="#" class="inline-flex items-center gap-2 bg-[#5B9F01] hover:bg-[#4a7f01] text-white font-semibold px-8 py-3 rounded-full transition duration-300 shadow-md hover:shadow-lg">-->
+                <!--    Read More <i class="fas fa-arrow-right text-sm"></i>-->
+                <!--</a>-->
             </div>
         </div>
     </div>
@@ -365,9 +365,9 @@
                 </div>
 
                 <!-- Button -->
-                <a href="#" class="inline-flex items-center gap-2 bg-[#5B9F01] hover:bg-[#4a7f01] text-white font-semibold px-8 py-3 rounded-full transition duration-300 shadow-md hover:shadow-lg">
-                    Read More <i class="fas fa-arrow-right text-sm"></i>
-                </a>
+                <!--<a href="#" class="inline-flex items-center gap-2 bg-[#5B9F01] hover:bg-[#4a7f01] text-white font-semibold px-8 py-3 rounded-full transition duration-300 shadow-md hover:shadow-lg">-->
+                <!--    Read More <i class="fas fa-arrow-right text-sm"></i>-->
+                <!--</a>-->
             </div>
 
             <!-- Right Side - Image -->
@@ -464,9 +464,9 @@
                 </div>
 
                 <!-- Button -->
-                <a href="#" class="inline-flex items-center gap-2 bg-[#5B9F01] hover:bg-[#4a7f01] text-white font-semibold px-8 py-3 rounded-full transition duration-300 shadow-md hover:shadow-lg">
-                    Read More <i class="fas fa-arrow-right text-sm"></i>
-                </a>
+                <!--<a href="#" class="inline-flex items-center gap-2 bg-[#5B9F01] hover:bg-[#4a7f01] text-white font-semibold px-8 py-3 rounded-full transition duration-300 shadow-md hover:shadow-lg">-->
+                <!--    Read More <i class="fas fa-arrow-right text-sm"></i>-->
+                <!--</a>-->
             </div>
         </div>
     </div>
@@ -503,13 +503,26 @@
                         <strong class="text-gray-700">Gaming Console Repairs:</strong> We fix disc drive issues, DVD drive problems, power faults, and more. We service devices like Nintendo DS, DSi, 3DS (including LCD, touchscreen, and power switch repairs), Xbox One, One S, and all versions of PS4.
                     </p>
 
-                    <p>
-                        <strong class="text-gray-700">Fast, Same-Day Service:</strong> We're committed to quality and speed. Many repairs are completed in under an hour!
-                    </p>
+                    
                 </div>
 
                 <!-- Features List -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-6 mb-8">
+               
+            </div>
+
+            <!-- Right Side - Image -->
+            <div class="flex-1 relative group">
+                <div class="relative">
+                    <!-- Main Image -->
+                    <!--<div class="rounded-2xl overflow-hidden shadow-xl relative">-->
+                    <!--    <img src="https://thegreenjack.com/wp-content/uploads/2026/03/pngtree-repairing-and-upgrade-mobile-phone-electronic-computer-hardware-and-technology-concept-image_15645837-1.jpg" alt="Repair Services" class="w-full h-auto object-cover rounded-2xl transition-transform duration-500 group-hover:scale-105">-->
+                        <!-- Overlay -->
+                    <!--    <div class="absolute inset-0 bg-gradient-to-tr from-black/10 to-transparent"></div>-->
+                    <!--</div>-->
+                    <p>
+                        <strong class="text-gray-700">Fast, Same-Day Service:</strong> We're committed to quality and speed. Many repairs are completed in under an hour!
+                    </p>
+ <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-6 mb-8">
                     <div class="flex items-center gap-2">
                         <i class="fas fa-check-circle text-[#5B9F01] text-sm"></i>
                         <span class="text-gray-600 text-sm">iPhone, iPod & iPad Repair</span>
@@ -537,21 +550,9 @@
                 </div>
 
                 <!-- Button -->
-                <a href="#" class="inline-flex items-center gap-2 bg-[#5B9F01] hover:bg-[#4a7f01] text-white font-semibold px-8 py-3 rounded-full transition duration-300 shadow-md hover:shadow-lg">
-                    Learn More <i class="fas fa-arrow-right text-sm"></i>
-                </a>
-            </div>
-
-            <!-- Right Side - Image -->
-            <div class="flex-1 relative group">
-                <div class="relative">
-                    <!-- Main Image -->
-                    <div class="rounded-2xl overflow-hidden shadow-xl relative">
-                        <img src="https://thegreenjack.com/wp-content/uploads/2026/03/pngtree-repairing-and-upgrade-mobile-phone-electronic-computer-hardware-and-technology-concept-image_15645837-1.jpg" alt="Repair Services" class="w-full h-auto object-cover rounded-2xl transition-transform duration-500 group-hover:scale-105">
-                        <!-- Overlay -->
-                        <div class="absolute inset-0 bg-gradient-to-tr from-black/10 to-transparent"></div>
-                    </div>
-
+                <!--<a href="#" class="inline-flex items-center gap-2 bg-[#5B9F01] hover:bg-[#4a7f01] text-white font-semibold px-8 py-3 rounded-full transition duration-300 shadow-md hover:shadow-lg">-->
+                <!--    Learn More <i class="fas fa-arrow-right text-sm"></i>-->
+                <!--</a>-->
 
 
 

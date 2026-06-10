@@ -125,7 +125,7 @@
                         @if($service->featured_image)
                             <img src="{{ asset('storage/'. $service->featured_image) }}"
                                  alt="{{ $service->title }}"
-                                 class="w-30 h-40 object-cover group-hover:scale-105 transition duration-300">
+                                 class=" object-cover group-hover:scale-105 transition duration-300">
                         @else
                             <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path>

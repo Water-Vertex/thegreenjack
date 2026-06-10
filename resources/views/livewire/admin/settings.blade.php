@@ -22,7 +22,7 @@
                     <div class="flex items-center space-x-4">
                         @if($settings && $settings->favicon)
                             <div class="flex items-center space-x-2">
-                                <img src="{{ Storage::url($settings->favicon) }}" alt="Favicon" class="w-8 h-8">
+                                <img src="{{ asset('storage/'.$settings->favicon) }}" alt="Favicon" class="w-8 h-8">
                                 <button type="button" wire:click="removeImage('favicon')" class="text-red-600 hover:text-red-800 text-sm">
                                     <i class="fas fa-times"></i>
                                 </button>
@@ -40,7 +40,7 @@
                     <div class="flex items-center space-x-4">
                         @if($settings && $settings->main_logo)
                             <div class="flex items-center space-x-2">
-                                <img src="{{ Storage::url($settings->main_logo) }}" alt="Main Logo" class="h-10">
+                                <img src="{{ asset('storage/'.$settings->main_logo) }}" alt="Main Logo" class="h-10">
                                 <button type="button" wire:click="removeImage('main_logo')" class="text-red-600 hover:text-red-800 text-sm">
                                     <i class="fas fa-times"></i>
                                 </button>
@@ -58,7 +58,7 @@
                     <div class="flex items-center space-x-4">
                         @if($settings && $settings->footer_logo)
                             <div class="flex items-center space-x-2">
-                                <img src="{{ Storage::url($settings->footer_logo) }}" alt="Footer Logo" class="h-10">
+                                <img src="{{ asset('storage/'.$settings->footer_logo) }}" alt="Footer Logo" class="h-10">
                                 <button type="button" wire:click="removeImage('footer_logo')" class="text-red-600 hover:text-red-800 text-sm">
                                     <i class="fas fa-times"></i>
                                 </button>

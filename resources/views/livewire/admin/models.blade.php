@@ -6,7 +6,7 @@
                 <h1 class="text-2xl font-bold text-gray-900">Brand Models Management</h1>
                 <p class="text-gray-600 mt-1">Manage your brand models with SEO optimization</p>
             </div>
-            <button 
+            <button
                 wire:click="create"
                 wire:loading.attr="disabled"
                 class="px-4 py-2 bg-orange-500 text-white rounded-md hover:bg-orange-600 transition-colors flex items-center space-x-2 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
@@ -31,10 +31,10 @@
                 <div class="relative">
                     <div class="flex items-center bg-gray-100 rounded-lg px-3 py-2 w-full">
                         <i class="fas fa-search text-gray-400 mr-2"></i>
-                        <input 
-                            type="text" 
+                        <input
+                            type="text"
                             wire:model.live="search"
-                            placeholder="Search brand models by name, description, or meta data..." 
+                            placeholder="Search brand models by name, description, or meta data..."
                             class="bg-transparent border-none focus:outline-none focus:ring-0 w-full text-sm"
                         >
                     </div>
@@ -80,8 +80,8 @@
                     <div class="col-span-3">
                         <div class="flex items-center space-x-3">
                             @if($model->featured_image)
-                                <img src="{{ asset('storage/' . $model->featured_image) }}" 
-                                     alt="{{ $model->name }}" 
+                                <img src="{{ asset('storage/' . $model->featured_image) }}"
+                                     alt="{{ $model->name }}"
                                      class="w-12 h-12 rounded-lg object-cover border border-gray-200">
                             @else
                                 <div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center border border-gray-200">
@@ -128,7 +128,7 @@
                     <!-- Actions -->
                     <div class="col-span-2">
                         <div class="flex items-center justify-center space-x-2">
-                            <button 
+                            <button
                                 wire:click="edit({{ $model->id }})"
                                 wire:loading.attr="disabled"
                                 class="px-3 py-1 bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200 transition-colors text-xs font-medium flex items-center space-x-1 disabled:opacity-50"
@@ -143,8 +143,8 @@
                                     <span>Loading...</span>
                                 </span>
                             </button>
-                            
-                            <button 
+
+                            <button
                                 wire:click="delete({{ $model->id }})"
                                 wire:confirm="Are you sure you want to delete this brand model?"
                                 wire:loading.attr="disabled"
@@ -198,9 +198,9 @@
                             <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-orange-500"></div>
                         </div>
                     </div>
-                    <button wire:click="resetForm" 
+                    <button wire:click="resetForm"
                             class="text-gray-400 hover:text-gray-600 transition-colors"
-                            wire:loading.attr="disabled" 
+                            wire:loading.attr="disabled"
                             wire:target="create,edit,save">
                         <i class="fas fa-times"></i>
                     </button>
@@ -214,15 +214,30 @@
                             <!-- Name -->
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Brand Model Name *</label>
-                                <input 
-                                    type="text" 
+                                <input
+                                    type="text"
                                     wire:model="name"
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 disabled:opacity-50"
                                     placeholder="Enter brand model name"
-                                    wire:loading.attr="disabled" 
+                                    wire:loading.attr="disabled"
                                     wire:target="create,edit,save"
                                 >
-                                @error('name') 
+                                @error('name')
+                                    <span class="text-red-500 text-xs">{{ $message }}</span>
+                                @enderror
+                            </div>
+
+                            <!-- Category ID -->
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Category ID</label>
+
+                                <select wire:model.live="category_id" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#5C9F01] focus:border-[#5C9F01]">
+                                    <option value="">Select Category</option>
+                                    @foreach($categories as $category)
+                                        <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                    @endforeach
+                                </select>
+                                @error('category_id')
                                     <span class="text-red-500 text-xs">{{ $message }}</span>
                                 @enderror
                             </div>
@@ -230,14 +245,17 @@
                             <!-- Brand ID -->
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Brand ID</label>
-                                
-                                <select wire:model="brand_id" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 disabled:opacity-50">
-                                    <option value="">Select a brand</option>
-                                    @foreach($brands as $id => $name)
-                                        <option value="{{ $id }}">{{ $name }}</option>
+
+                                <select wire:model.live="brand_id" {{ !$category_id ? 'disabled' : '' }} class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#5C9F01] focus:border-[#5C9F01]">
+                                    <option value="">
+                                        {{ $category_id ? 'Select a brand' : 'Select category first' }}
+                                    </option>
+
+                                    @foreach($brands as $brand)
+                                        <option value="{{ $brand->id }}">{{ $brand->name }}</option>
                                     @endforeach
                                 </select>
-                                @error('brand_id') 
+                                @error('brand_id')
                                     <span class="text-red-500 text-xs">{{ $message }}</span>
                                 @enderror
                             </div>
@@ -247,16 +265,16 @@
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Slug *</label>
                                 <div class="flex items-center">
                                     <span class="px-3 py-2 bg-gray-100 border border-r-0 border-gray-300 rounded-l-md text-gray-500">/</span>
-                                    <input 
-                                        type="text" 
+                                    <input
+                                        type="text"
                                         wire:model="slug"
                                         class="flex-1 px-3 py-2 border border-gray-300 rounded-r-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 disabled:opacity-50"
                                         placeholder="brand-model-slug"
-                                        wire:loading.attr="disabled" 
+                                        wire:loading.attr="disabled"
                                         wire:target="create,edit,save"
                                     >
                                 </div>
-                                @error('slug') 
+                                @error('slug')
                                     <span class="text-red-500 text-xs">{{ $message }}</span>
                                 @enderror
                                 <p class="text-xs text-gray-500 mt-1">URL-friendly version of the brand model name</p>
@@ -279,38 +297,38 @@
                                         @endphp
                                         @if($brandModel && $brandModel->featured_image)
                                             <div class="flex items-center space-x-2">
-                                                <img src="{{ Storage::url($brandModel->featured_image) }}" alt="{{ $brandModel->name }}" class="w-16 h-16 object-cover rounded border">
+                                                <img src="{{ asset('storage/' . $brandModel->featured_image) }}" alt="{{ $brandModel->name }}" class="w-16 h-16 object-cover rounded border">
                                                 <button type="button" wire:click="removeImage" class="text-red-600 hover:text-red-800 text-sm">
                                                     <i class="fas fa-times"></i>
                                                 </button>
                                             </div>
                                         @endif
                                     @endif
-                                    <input 
-                                        type="file" 
+                                    <input
+                                        type="file"
                                         wire:model="featured_image"
                                         class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-orange-50 file:text-orange-700 hover:file:bg-orange-100"
-                                        accept="image/*"
+                                        
                                     >
                                 </div>
-                                @error('featured_image') 
+                                @error('featured_image')
                                     <span class="text-red-500 text-xs">{{ $message }}</span>
                                 @enderror
-                                <p class="text-xs text-gray-500 mt-1">Recommended: 400x400px PNG/JPG</p>
+                                <!--<p class="text-xs text-gray-500 mt-1">Recommended: 400x400px PNG/JPG</p>-->
                             </div>
 
                             <!-- Description -->
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
-                                <textarea 
+                                <textarea
                                     wire:model="description"
                                     rows="4"
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 disabled:opacity-50"
                                     placeholder="Brief description about the brand model"
-                                    wire:loading.attr="disabled" 
+                                    wire:loading.attr="disabled"
                                     wire:target="create,edit,save"
                                 ></textarea>
-                                @error('description') 
+                                @error('description')
                                     <span class="text-red-500 text-xs">{{ $message }}</span>
                                 @enderror
                             </div>
@@ -318,15 +336,15 @@
                             <!-- Blog Description -->
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Blog Description</label>
-                                <textarea 
+                                <textarea
                                     wire:model="blog_description"
                                     rows="4"
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 disabled:opacity-50"
                                     placeholder="Detailed description for blog posts or brand model pages"
-                                    wire:loading.attr="disabled" 
+                                    wire:loading.attr="disabled"
                                     wire:target="create,edit,save"
                                 ></textarea>
-                                @error('blog_description') 
+                                @error('blog_description')
                                     <span class="text-red-500 text-xs">{{ $message }}</span>
                                 @enderror
                             </div>
@@ -335,20 +353,20 @@
                         <!-- SEO Section -->
                         <div class="border-t border-gray-200 pt-6">
                             <h4 class="text-md font-semibold text-gray-900 mb-4">SEO Settings</h4>
-                            
+
                             <div class="space-y-4">
                                 <!-- Meta Title -->
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Meta Title</label>
-                                    <input 
-                                        type="text" 
+                                    <input
+                                        type="text"
                                         wire:model="meta_title"
                                         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 disabled:opacity-50"
                                         placeholder="Meta title for SEO (defaults to brand model name)"
-                                        wire:loading.attr="disabled" 
+                                        wire:loading.attr="disabled"
                                         wire:target="create,edit,save"
                                     >
-                                    @error('meta_title') 
+                                    @error('meta_title')
                                         <span class="text-red-500 text-xs">{{ $message }}</span>
                                     @enderror
                                 </div>
@@ -356,15 +374,15 @@
                                 <!-- Meta Description -->
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Meta Description</label>
-                                    <textarea 
+                                    <textarea
                                         wire:model="meta_description"
                                         rows="3"
                                         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500 disabled:opacity-50"
                                         placeholder="Meta description for SEO"
-                                        wire:loading.attr="disabled" 
+                                        wire:loading.attr="disabled"
                                         wire:target="create,edit,save"
                                     ></textarea>
-                                    @error('meta_description') 
+                                    @error('meta_description')
                                         <span class="text-red-500 text-xs">{{ $message }}</span>
                                     @enderror
                                 </div>
@@ -373,19 +391,19 @@
 
                         <!-- Form Actions with Loading State -->
                         <div class="flex justify-end space-x-3 pt-6 border-t border-gray-200">
-                            <button 
+                            <button
                                 type="button"
                                 wire:click="resetForm"
                                 class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors disabled:opacity-50"
-                                wire:loading.attr="disabled" 
+                                wire:loading.attr="disabled"
                                 wire:target="save"
                             >
                                 Cancel
                             </button>
-                            <button 
+                            <button
                                 type="submit"
                                 class="px-4 py-2 text-sm font-medium text-white bg-orange-500 rounded-md hover:bg-orange-600 transition-colors flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                                wire:loading.attr="disabled" 
+                                wire:loading.attr="disabled"
                                 wire:target="save"
                             >
                                 <span wire:loading.remove wire:target="save">
@@ -406,8 +424,8 @@
 
     <!-- Flash Messages -->
     @if (session()->has('success'))
-        <div x-data="{ show: true }" 
-             x-show="show" 
+        <div x-data="{ show: true }"
+             x-show="show"
              x-init="setTimeout(() => show = false, 3000)"
              class="fixed bottom-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg transition-all duration-300">
             <div class="flex items-center space-x-2">
@@ -418,8 +436,8 @@
     @endif
 
     @if (session()->has('error'))
-        <div x-data="{ show: true }" 
-             x-show="show" 
+        <div x-data="{ show: true }"
+             x-show="show"
              x-init="setTimeout(() => show = false, 5000)"
              class="fixed bottom-4 right-4 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg transition-all duration-300">
             <div class="flex items-center space-x-2">

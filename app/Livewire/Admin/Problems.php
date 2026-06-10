@@ -25,12 +25,12 @@ class Problems extends Component
     public $selectedCategory = null;
     public $selectedBrand = null;
     public $selectedModel = null;
-    
+
     // Data collections
     public $categories = [];
     public $brands = [];
     public $models = [];
-    
+
     // Form properties
     public $showForm = false;
     public $formType = 'create';
@@ -76,7 +76,7 @@ class Problems extends Component
     public function resetForm()
     {
         $this->reset([
-            'showForm', 'formType', 'problemId', 'name', 'slug', 'description', 
+            'showForm', 'formType', 'problemId', 'name', 'slug', 'description',
             'price', 'discounted_price', 'status', 'selectedCategory', 'selectedBrand', 'selectedModel'
         ]);
         $this->brands = collect();
@@ -90,7 +90,7 @@ class Problems extends Component
             $this->brands = Brand::whereHas('categories', function($query) use ($value) {
                 $query->where('categories.id', $value);
             })->orderBy('name')->get();
-            
+
             $this->selectedBrand = null;
             $this->selectedModel = null;
             $this->models = collect();
@@ -139,7 +139,7 @@ class Problems extends Component
     public function edit($problemId)
     {
         $problem = Problem::with('model.brand.categories')->findOrFail($problemId);
-        
+
         $this->resetForm();
         $this->formType = 'edit';
         $this->problemId = $problem->id;
@@ -148,24 +148,26 @@ class Problems extends Component
         $this->description = $problem->description;
         $this->price = $problem->price;
         $this->discounted_price = $problem->discounted_price;
+        $this->selectedCategory = $problem->category_id;
+        $this->selectedBrand = $problem->brand_id;
         $this->selectedModel = $problem->brand_model_id;
-        
+
         if ($problem->model) {
             $this->selectedBrand = $problem->model->brand_id;
-            
+
             if ($problem->model->brand && $problem->model->brand->categories->first()) {
                 $this->selectedCategory = $problem->model->brand->categories->first()->id;
-                
+
                 $this->brands = Brand::whereHas('categories', function($query) use ($problem) {
                     $query->where('categories.id', $problem->model->brand->categories->first()->id);
                 })->orderBy('name')->get();
-                
+
                 $this->models = BrandModel::where('brand_id', $this->selectedBrand)
                     ->orderBy('name')
                     ->get();
             }
         }
-        
+
         $this->showForm = true;
         $this->rules['slug'] = 'required|string|max:255|unique:problems,slug,' . $problemId;
     }
@@ -176,6 +178,8 @@ class Problems extends Component
 
         $data = [
             'brand_model_id' => $this->selectedModel,
+            'brand_id' => $this->selectedBrand,
+            'category_id' => $this->selectedCategory,
             'name' => $this->name,
             'slug' => $this->slug,
             'description' => $this->description,

@@ -11,6 +11,7 @@ class BrandModel extends Model
     protected $fillable = [
         'name',
         'brand_id',
+        'category_id',
         'slug',
         'description',
         'blog_description',
@@ -23,6 +24,12 @@ class BrandModel extends Model
     {
         return $this->belongsTo(Brand::class, 'brand_id');
     }
+
+
+public function category()
+{
+    return $this->belongsTo(Category::class);
+}
 
     // Accessor for excerpt
     public function getExcerptAttribute()
