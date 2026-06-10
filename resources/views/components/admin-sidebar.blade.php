@@ -44,6 +44,11 @@
                 <span class="text-sm font-medium">Brand Models</span>
             </a>
 
+             <a href="{{ route('admin.series') }}" wire:navigate class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/80 hover:text-white hover:bg-[#5C9F01]/40 transition-all duration-200 group">
+                <span class="material-icons text-2xl">label</span>
+                <span class="text-sm font-medium">Series</span>
+            </a>
+
             <a href="{{ route('admin.problems') }}" wire:navigate class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/80 hover:text-white hover:bg-[#5C9F01]/40 transition-all duration-200 group">
                 <span class="material-icons text-2xl">question_answer</span>
                 <span class="text-sm font-medium">Problems</span>

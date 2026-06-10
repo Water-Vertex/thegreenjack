@@ -1,6 +1,7 @@
 <?php
 
 use App\Livewire\Admin\Blog;
+use App\Livewire\Admin\BrandProblems;
 use App\Livewire\Admin\Brands;
 use App\Livewire\Admin\Categories;
 use App\Livewire\Admin\Dashboard;
@@ -25,9 +26,13 @@ use App\Livewire\User\Shop;
 use App\Livewire\User\ShopDetails;
 use App\Livewire\Admin\Settings;
 use App\Livewire\Admin\Contacts;
+use App\Livewire\Admin\Series;
 use App\Livewire\Admin\PageMeta;
 use App\Livewire\Admin\PrintingRequest;
 use App\Livewire\Admin\ProgramaticSeo;
+use App\Livewire\User\Blogs as UserBlog;
+use App\Livewire\User\ShopByCategory;
+use App\Livewire\User\BlogDetail;
 use App\Livewire\User\ProgramaticSeo as ProgramaticSeoUser;
 use Illuminate\Support\Facades\Route;
 
@@ -35,17 +40,21 @@ use Illuminate\Support\Facades\Route;
 Route::get('/login', Login::class)->name('login');
 Route::get('/logout', Logout::class)->name('logout');
 
-Route::get('/', Home::class,)->name('home');
-Route::get('/contact-us', Contact::class,)->name('contact-us');
-Route::get('/device-repair/{slug}', DeviceRepair::class,)->name('device-repair');
+Route::get('/', Home::class)->name('home');
+Route::get('/contact-us', Contact::class)->name('contact-us');
+Route::get('/device-repair/{slug}', DeviceRepair::class)->name('device-repair');
 Route::get('/repair',Repair::class)->name('repair');
 Route::get('/printing-marketing', PrintingMarketing::class)->name('printing');
 Route::get('/shop',Shop::class)->name('shop');
 Route::get('/products',UserProducts::class)->name('products');
 Route::get('/product/{slug}',ShopDetails::class)->name('shop.details');
+Route::get('/category/{slug}',ShopByCategory::class)->name('shop.by.category');
 Route::get('/cart', Cart::class)->name('cart.page');
 Route::get('/checkout', Checkout::class)->name('checkout');
+Route::get('/blogs', UserBlog::class)->name('blogs');
+Route::get('/blog/{slug}', BlogDetail::class)->name('blog.detail');
 Route::get('/{slug}', ProgramaticSeoUser::class)->name('seo.show');
+
 
 Route::middleware(['auth','preventback'])->prefix('admin')->name('admin.')->group(function () {
 	Route::get('/dashboard',Dashboard::class)->name('index');
@@ -56,6 +65,9 @@ Route::middleware(['auth','preventback'])->prefix('admin')->name('admin.')->grou
     Route::get('/brands', Brands::class)->name('brands');
     Route::get('/brand-models', Models::class)->name('brand-models');
     Route::get('/problems', Problems::class)->name('problems');
+    Route::get('/series', Series::class)->name('series');
+    Route::get('/brand-problems', BrandProblems::class)
+    ->name('brand-problems');
     Route::get('/repair-requests', RepairRequests::class)->name('repair-requests');
     Route::get('/settings', Settings::class)->name('settings');
     Route::get('/seo-settings', PageMeta::class)->name('seo-settings');

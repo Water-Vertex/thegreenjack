@@ -49,15 +49,14 @@
                         <div id="categoryDropdownMenu" class="hidden absolute top-full left-0 mt-1 w-48 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
                             <ul class="py-1 text-sm">
                                 <li><a href="#" class="block px-4 py-2 hover:bg-gray-50 transition">All Categories</a></li>
-                                <li><a href="#" class="block px-4 py-2 hover:bg-gray-50 transition">Cables & Connectors</a></li>
-                                <li><a href="#" class="block px-4 py-2 hover:bg-gray-50 transition">Chargers</a></li>
-                                <li><a href="#" class="block px-4 py-2 hover:bg-gray-50 transition">Audio</a></li>
-                                <li><a href="#" class="block px-4 py-2 hover:bg-gray-50 transition">Power Banks</a></li>
-                                <li><a href="#" class="block px-4 py-2 hover:bg-gray-50 transition">Accessories</a></li>
-                                <li><a href="#" class="block px-4 py-2 hover:bg-gray-50 transition">Smart Home</a></li>
-                                <li><a href="#" class="block px-4 py-2 hover:bg-gray-50 transition">Mobile Phones</a></li>
-                                <li><a href="#" class="block px-4 py-2 hover:bg-gray-50 transition">Laptops</a></li>
-                                <li><a href="#" class="block px-4 py-2 hover:bg-gray-50 transition">Tablets</a></li>
+                                @php
+                                    $categories = \App\Models\Category::all();
+                                @endphp
+                                @foreach($categories as $category)
+                                    <li><a href="{{route('shop.by.category', $category->slug)}}" wire:navigate class="block px-4 py-2 hover:bg-gray-50 transition">{{ $category->name }}</a></li>
+                                @endforeach
+
+
                             </ul>
                         </div>
                     </div>
@@ -190,60 +189,80 @@
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script>
-    // Category dropdown
-    const dropdownBtn = document.getElementById('categoryDropdownBtn');
-    const dropdownMenu = document.getElementById('categoryDropdownMenu');
-    if (dropdownBtn && dropdownMenu) {
-        dropdownBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            dropdownMenu.classList.toggle('hidden');
-        });
-        document.addEventListener('click', (e) => {
-            if (!dropdownBtn.contains(e.target) && !dropdownMenu.contains(e.target)) {
-                dropdownMenu.classList.add('hidden');
-            }
-        });
-        const categoryLinks = dropdownMenu.querySelectorAll('a');
-        categoryLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                dropdownBtn.innerHTML = `${link.textContent} <i class="fas fa-chevron-down text-xs"></i>`;
-                dropdownMenu.classList.add('hidden');
+(function () {
+
+    function initHeaderScripts() {
+
+        // Category dropdown
+        const dropdownBtn = document.getElementById('categoryDropdownBtn');
+        const dropdownMenu = document.getElementById('categoryDropdownMenu');
+
+        if (dropdownBtn && dropdownMenu) {
+            dropdownBtn.onclick = function (e) {
+                e.stopPropagation();
+                dropdownMenu.classList.toggle('hidden');
+            };
+
+            dropdownMenu.querySelectorAll('a').forEach(function (link) {
+                link.onclick = function (e) {
+                    e.preventDefault();
+                    dropdownBtn.innerHTML = `${link.textContent} <i class="fas fa-chevron-down text-xs"></i>`;
+                    dropdownMenu.classList.add('hidden');
+                };
             });
-        });
-    }
+        }
 
-    // All Departments toggle
-    const toggleBtn = document.getElementById('allDepartmentsBtn');
-    const menu = document.getElementById('allDepartmentsMenu');
-    if (toggleBtn && menu) {
-        toggleBtn.addEventListener('click', function() {
-            menu.classList.toggle('hidden');
-        });
-    }
+        // All Departments toggle
+        const toggleBtn = document.getElementById('allDepartmentsBtn');
+        const menu = document.getElementById('allDepartmentsMenu');
 
-    // Currency dropdown
-    $(document).ready(function() {
-        $('.currency-btn').click(function(e) {
+        if (toggleBtn && menu) {
+            toggleBtn.onclick = function () {
+                menu.classList.toggle('hidden');
+            };
+        }
+
+        // Currency dropdown
+        $('.currency-btn').off('click').on('click', function (e) {
             e.stopPropagation();
             $('.currency-dropdown').toggle();
         });
-        $(document).click(function() { $('.currency-dropdown').hide(); });
-        $('.currency-dropdown').click(function(e) { e.stopPropagation(); });
 
-        // Mobile Menu Sidebar
-        $('#mobileMenuBtn').click(function() {
+        $('.currency-dropdown').off('click').on('click', function (e) {
+            e.stopPropagation();
+        });
+
+        // Mobile Sidebar
+        $('#mobileMenuBtn').off('click').on('click', function () {
             $('#mobileSidebar').addClass('translate-x-0').removeClass('-translate-x-full');
             $('#overlay').removeClass('hidden');
             $('body').css('overflow', 'hidden');
         });
 
-        $('#closeSidebar, #overlay').click(function() {
+        $('#closeSidebar, #overlay').off('click').on('click', function () {
             $('#mobileSidebar').addClass('-translate-x-full').removeClass('translate-x-0');
             $('#overlay').addClass('hidden');
             $('body').css('overflow', '');
         });
+    }
+
+    document.addEventListener('click', function (e) {
+        const dropdownBtn = document.getElementById('categoryDropdownBtn');
+        const dropdownMenu = document.getElementById('categoryDropdownMenu');
+
+        if (dropdownBtn && dropdownMenu) {
+            if (!dropdownBtn.contains(e.target) && !dropdownMenu.contains(e.target)) {
+                dropdownMenu.classList.add('hidden');
+            }
+        }
+
+        $('.currency-dropdown').hide();
     });
+
+    document.addEventListener('DOMContentLoaded', initHeaderScripts);
+    document.addEventListener('livewire:navigated', initHeaderScripts);
+
+})();
 </script>
 
 <style>
