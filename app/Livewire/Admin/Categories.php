@@ -35,6 +35,7 @@ class Categories extends Component
     public $page_schemas = '';
     public $position = 0;
     public $is_active = true;
+    public $is_repairing_category = false;
 
     // SEO Analysis properties
     public $seoScore = 0;
@@ -69,8 +70,8 @@ class Categories extends Component
     public function resetForm()
     {
         $this->reset([
-            'showForm', 'formType', 'categoryId', 'name', 'description', 
-            'parent_id', 'image', 'meta_title', 'meta_description', 
+            'showForm', 'formType', 'categoryId', 'name', 'description',
+            'parent_id', 'image', 'meta_title', 'meta_description',
             'meta_keywords', 'meta_tags', 'page_schemas', 'position', 'is_active',
             'seoScore', 'seoMetrics'
         ]);
@@ -79,7 +80,7 @@ class Categories extends Component
     public function analyzeSeo()
     {
         $this->seoMetrics = [];
-        
+
         // Analyze Category Name
         $nameLength = strlen($this->name);
         $this->seoMetrics[] = [
@@ -151,7 +152,7 @@ class Categories extends Component
             }
         }
 
-        $this->seoScore = $totalWeight > 0 ? 
+        $this->seoScore = $totalWeight > 0 ?
             round(($achievedWeight / $totalWeight) * 100) : 0;
     }
 
@@ -186,7 +187,7 @@ class Categories extends Component
     public function edit($categoryId)
     {
         $category = Category::findOrFail($categoryId);
-        
+
         $this->formType = 'edit';
         $this->categoryId = $category->id;
         $this->name = $category->name;
@@ -199,6 +200,7 @@ class Categories extends Component
         $this->page_schemas = $category->page_schemas;
         $this->position = $category->position;
         $this->is_active = $category->is_active;
+        $this->is_repairing_category = $category->is_repairing_category;
         $this->showForm = true;
         $this->loadParentCategories();
         $this->analyzeSeo();
@@ -220,6 +222,7 @@ class Categories extends Component
             'page_schemas' => $this->page_schemas,
             'position' => $this->position,
             'is_active' => $this->is_active,
+            'is_repairing_category' => $this->is_repairing_category,
         ];
 
         // Handle image upload
@@ -243,8 +246,8 @@ class Categories extends Component
     public function delete($categoryId)
     {
         $category = Category::findOrFail($categoryId);
-        
-    
+
+
         $category->delete();
         session()->flash('success', 'Category deleted successfully.');
     }
@@ -253,7 +256,7 @@ class Categories extends Component
     {
         $category = Category::findOrFail($categoryId);
         $category->update(['is_active' => !$category->is_active]);
-        
+
         session()->flash('success', 'Category status updated successfully.');
     }
 
@@ -269,7 +272,7 @@ class Categories extends Component
             ->orderBy($this->sortField, $this->sortDirection)
             ->paginate($this->perPage);
 
-        $parentCategories = $this->deferredLoaded ? 
+        $parentCategories = $this->deferredLoaded ?
             Category::whereNull('parent_id')
                 ->where('is_active', true)
                 ->orderBy('name')

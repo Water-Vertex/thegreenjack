@@ -34,11 +34,8 @@ use App\Livewire\Admin\PageMeta;
 use App\Livewire\Admin\PrintingRequest;
 use App\Livewire\Admin\ProgramaticSeo;
 use App\Livewire\Admin\Orders;
-use App\Livewire\User\Blogs as UserBlog;
 use App\Livewire\User\ShopByCategory;
 use App\Livewire\User\Blogs as UserBlog;
-use App\Livewire\User\ShopByCategory;
-use App\Livewire\User\BlogDetail;
 use App\Livewire\User\ProgramaticSeo as ProgramaticSeoUser;
 use Illuminate\Support\Facades\Route;
 
@@ -82,7 +79,7 @@ Route::middleware(['auth','preventback'])->prefix('admin')->name('admin.')->grou
     Route::get('/printing-requests', PrintingRequest::class)->name('printing-requests');
     Route::get('/blogs', Blog::class)->name('blogs');
 
-    
+
     Route::get('/programatic-seo', ProgramaticSeo::class)->name('programatic-seo');
     Route::get('/orders', Orders::class)->name('orders');
 

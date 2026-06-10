@@ -21,10 +21,12 @@ class Category extends Model
         'page_schemas',
         'position',
         'is_active',
+        'is_repairing_category'
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
+        'is_repairing_category' => 'boolean',
     ];
 
     public function parent(): BelongsTo

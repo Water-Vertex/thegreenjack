@@ -6,7 +6,7 @@
                 <h1 class="text-2xl font-bold text-gray-900">Problems Management</h1>
                 <p class="text-gray-600 mt-1">Manage device problems, repairs, and pricing</p>
             </div>
-            <button 
+            <button
                 wire:click="create"
                 wire:loading.attr="disabled"
                 class="px-4 py-2 bg-[#5C9F01] text-white rounded-md hover:bg-[#5C9F01] transition-colors flex items-center space-x-2 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
@@ -30,10 +30,10 @@
                 <div class="relative">
                     <div class="flex items-center bg-gray-100 rounded-lg px-3 py-2 w-full">
                         <i class="fas fa-search text-gray-400 mr-2"></i>
-                        <input 
-                            type="text" 
+                        <input
+                            type="text"
                             wire:model.live="search"
-                            placeholder="Search problems by name or description..." 
+                            placeholder="Search problems by name or description..."
                             class="bg-transparent border-none focus:outline-none focus:ring-0 w-full text-sm"
                         >
                     </div>
@@ -117,7 +117,7 @@
 
                     <!-- Status -->
                     <div class="col-span-1">
-                        <button 
+                        <button
                             wire:click="toggleStatus({{ $problem->id }})"
                             class="px-2 py-1 rounded-full text-xs font-medium transition-colors
                                 {{ $problem->status == 'active' ? 'bg-green-100 text-green-700 hover:bg-green-200' : 'bg-red-100 text-red-700 hover:bg-red-200' }}">
@@ -128,7 +128,7 @@
                     <!-- Actions -->
                     <div class="col-span-1">
                         <div class="flex items-center justify-center space-x-2">
-                            <button 
+                            <button
                                 wire:click="edit({{ $problem->id }})"
                                 wire:loading.attr="disabled"
                                 class="px-3 py-1 bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200 transition-colors text-xs font-medium flex items-center space-x-1 disabled:opacity-50"
@@ -143,8 +143,8 @@
                                     <span>Loading...</span>
                                 </span>
                             </button>
-                            
-                            <button 
+
+                            <button
                                 wire:click="delete({{ $problem->id }})"
                                 wire:confirm="Are you sure you want to delete this problem?"
                                 wire:loading.attr="disabled"
@@ -198,9 +198,9 @@
                             <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-[#5C9F01]"></div>
                         </div>
                     </div>
-                    <button wire:click="resetForm" 
+                    <button wire:click="resetForm"
                             class="text-gray-400 hover:text-gray-600 transition-colors"
-                            wire:loading.attr="disabled" 
+                            wire:loading.attr="disabled"
                             wire:target="create,edit,save">
                         <i class="fas fa-times"></i>
                     </button>
@@ -212,14 +212,14 @@
                         <!-- Category Selection -->
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Category *</label>
-                            <select wire:model.live="selectedCategory" 
+                            <select wire:model.live="selectedCategory"
                                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#5C9F01] focus:border-[#5C9F01]">
                                 <option value="">Select Category</option>
                                 @foreach($categories as $category)
                                     <option value="{{ $category->id }}">{{ $category->name }}</option>
                                 @endforeach
                             </select>
-                            @error('selectedCategory') 
+                            @error('selectedCategory')
                                 <span class="text-red-500 text-xs">{{ $message }}</span>
                             @enderror
                         </div>
@@ -227,7 +227,7 @@
                         <!-- Brand Selection -->
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Brand *</label>
-                            <select wire:model.live="selectedBrand" 
+                            <select wire:model.live="selectedBrand"
                                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#5C9F01] focus:border-[#5C9F01]"
                                 {{ !$selectedCategory ? 'disabled' : '' }}>
                                 <option value="">Select Brand</option>
@@ -235,7 +235,7 @@
                                     <option value="{{ $brand->id }}">{{ $brand->name }}</option>
                                 @endforeach
                             </select>
-                            @error('selectedBrand') 
+                            @error('selectedBrand')
                                 <span class="text-red-500 text-xs">{{ $message }}</span>
                             @enderror
                         </div>
@@ -243,7 +243,7 @@
                         <!-- Model Selection -->
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Model *</label>
-                            <select wire:model.live="selectedModel" 
+                            <select wire:model.live="selectedModel"
                                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#5C9F01] focus:border-[#5C9F01]"
                                 {{ !$selectedBrand ? 'disabled' : '' }}>
                                 <option value="">Select Model</option>
@@ -251,7 +251,7 @@
                                     <option value="{{ $model->id }}">{{ $model->name }}</option>
                                 @endforeach
                             </select>
-                            @error('selectedModel') 
+                            @error('selectedModel')
                                 <span class="text-red-500 text-xs">{{ $message }}</span>
                             @enderror
                         </div>
@@ -259,7 +259,7 @@
                         <!-- Problem Name -->
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Problem Name *</label>
-                            <input type="text" wire:model="name" 
+                            <input type="text" wire:model="name"
                                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#5C9F01] focus:border-[#5C9F01]"
                                 placeholder="e.g., Screen Replacement, Battery Issue">
                             @error('name') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
@@ -270,7 +270,7 @@
                             <label class="block text-sm font-medium text-gray-700 mb-1">Slug *</label>
                             <div class="flex items-center">
                                 <span class="px-3 py-2 bg-gray-100 border border-r-0 border-gray-300 rounded-l-md text-gray-500">/</span>
-                                <input type="text" wire:model="slug" 
+                                <input type="text" wire:model="slug"
                                     class="flex-1 px-3 py-2 border border-gray-300 rounded-r-md focus:outline-none focus:ring-2 focus:ring-[#5C9F01] focus:border-[#5C9F01]"
                                     placeholder="problem-slug">
                             </div>
@@ -281,14 +281,14 @@
                         <div class="grid grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Price ($)</label>
-                                <input type="number" step="0.01" wire:model="price" 
+                                <input type="number" step="0.01" wire:model="price"
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#5C9F01] focus:border-[#5C9F01]"
                                     placeholder="0.00">
                                 @error('price') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                             </div>
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Discounted Price ($)</label>
-                                <input type="number" step="0.01" wire:model="discounted_price" 
+                                <input type="number" step="0.01" wire:model="discounted_price"
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#5C9F01] focus:border-[#5C9F01]"
                                     placeholder="0.00">
                                 @error('discounted_price') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
@@ -298,7 +298,7 @@
                         <!-- Status -->
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
-                            <select wire:model="status" 
+                            <select wire:model="status"
                                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#5C9F01] focus:border-[#5C9F01]">
                                 <option value="active">Active</option>
                                 <option value="inactive">Inactive</option>
@@ -309,19 +309,30 @@
                         <!-- Description -->
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
-                            <textarea wire:model="description" rows="4" 
+                            <textarea wire:model="description" rows="4"
                                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#5C9F01] focus:border-[#5C9F01]"
                                 placeholder="Detailed description of the problem and repair process..."></textarea>
                             @error('description') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
                         </div>
 
+                        <!-- Is Featured -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Is Featured</label>
+                            <div class="flex items-center">
+                                <input type="checkbox" wire:model="is_featured"
+                                    class="h-4 w-4 text-[#5C9F01] focus:ring-[#5C9F01] border-gray-300 rounded">
+                                <span class="ml-2 text-sm text-gray-700">Mark as featured problem</span>
+                            </div>
+                            @error('is_featured') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                        </div>
+
                         <!-- Form Actions -->
                         <div class="flex justify-end space-x-3 pt-6 border-t border-gray-200">
-                            <button type="button" wire:click="resetForm" 
+                            <button type="button" wire:click="resetForm"
                                 class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors">
                                 Cancel
                             </button>
-                            <button type="submit" 
+                            <button type="submit"
                                 class="px-4 py-2 text-sm font-medium text-white bg-[#5C9F01] rounded-md hover:bg-[#5C9F01] transition-colors flex items-center space-x-2">
                                 <span wire:loading.remove wire:target="save">
                                     {{ $formType === 'create' ? 'Create Problem' : 'Update Problem' }}
@@ -341,7 +352,7 @@
 
     <!-- Flash Messages -->
     @if (session()->has('success'))
-        <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show" 
+        <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 3000)" x-show="show"
             class="fixed bottom-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg transition-all duration-300">
             <div class="flex items-center space-x-2">
                 <i class="fas fa-check-circle"></i>
@@ -351,7 +362,7 @@
     @endif
 
     @if (session()->has('error'))
-        <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 5000)" x-show="show" 
+        <div x-data="{ show: true }" x-init="setTimeout(() => show = false, 5000)" x-show="show"
             class="fixed bottom-4 right-4 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg transition-all duration-300">
             <div class="flex items-center space-x-2">
                 <i class="fas fa-exclamation-circle"></i>

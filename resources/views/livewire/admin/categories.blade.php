@@ -6,7 +6,7 @@
                 <h1 class="text-2xl font-bold text-gray-900">Categories Management</h1>
                 <p class="text-gray-600 mt-1">Manage your product categories with SEO optimization</p>
             </div>
-            <button 
+            <button
                 wire:click="create"
                 wire:loading.attr="disabled"
                 class="px-4 py-2 bg-[#5C9F01]0 text-white rounded-md hover:bg-[#5C9F01] transition-colors flex items-center space-x-2 text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed"
@@ -31,10 +31,10 @@
                 <div class="relative">
                     <div class="flex items-center bg-gray-100 rounded-lg px-3 py-2 w-full">
                         <i class="fas fa-search text-gray-400 mr-2"></i>
-                        <input 
-                            type="text" 
+                        <input
+                            type="text"
                             wire:model.live="search"
-                            placeholder="Search categories, meta titles, keywords..." 
+                            placeholder="Search categories, meta titles, keywords..."
                             class="bg-transparent border-none focus:outline-none focus:ring-0 w-full text-sm"
                         >
                     </div>
@@ -82,8 +82,8 @@
                     <div class="col-span-3">
                         <div class="flex items-center space-x-3">
                             @if($category->image)
-                                <img src="{{ asset('storage/' . $category->image) }}" 
-                                     alt="{{ $category->name }}" 
+                                <img src="{{ asset('storage/' . $category->image) }}"
+                                     alt="{{ $category->name }}"
                                      class="w-10 h-10 rounded-lg object-cover border border-gray-200">
                             @else
                                 <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center border border-gray-200">
@@ -101,6 +101,9 @@
                     <div class="col-span-2">
                         <span class="text-sm text-gray-600">{{ $category->parent?->name ?? '-' }}</span>
                     </div>
+
+
+
 
                     <!-- Meta Title -->
                     <div class="col-span-2">
@@ -120,7 +123,7 @@
 
                     <!-- Status -->
                     <div class="col-span-2 text-center">
-                        <button 
+                        <button
                             wire:click="toggleStatus({{ $category->id }})"
                             wire:loading.attr="disabled"
                             class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium transition-colors {{ $category->is_active ? 'bg-green-100 text-green-800 hover:bg-green-200' : 'bg-red-100 text-red-800 hover:bg-red-200' }} disabled:opacity-50"
@@ -139,7 +142,7 @@
                     <!-- Actions -->
                     <div class="col-span-2">
                         <div class="flex items-center justify-center space-x-2">
-                            <button 
+                            <button
                                 wire:click="edit({{ $category->id }})"
                                 wire:loading.attr="disabled"
                                 class="px-3 py-1 bg-blue-100 text-blue-700 rounded-md hover:bg-blue-200 transition-colors text-xs font-medium flex items-center space-x-1 disabled:opacity-50"
@@ -154,8 +157,8 @@
                                     <span>Loading...</span>
                                 </span>
                             </button>
-                            
-                            <button 
+
+                            <button
                                 wire:click="delete({{ $category->id }})"
                                 wire:confirm="Are you sure you want to delete this category?"
                                 wire:loading.attr="disabled"
@@ -209,9 +212,9 @@
                             <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-[#5C9F01]0"></div>
                         </div>
                     </div>
-                    <button wire:click="resetForm" 
+                    <button wire:click="resetForm"
                             class="text-gray-400 hover:text-gray-600 transition-colors"
-                            wire:loading.attr="disabled" 
+                            wire:loading.attr="disabled"
                             wire:target="create,edit,save">
                         <i class="fas fa-times"></i>
                     </button>
@@ -231,7 +234,7 @@
                                     </span>
                                 </div>
                             </div>
-                            
+
                             <!-- Score Bar -->
                             <div class="score-bar bg-gray-200 rounded-full h-2 mb-4">
                                 <div class="score-fill h-2 rounded-full {{ $seoScore >= 80 ? 'bg-green-500' : ($seoScore >= 60 ? 'bg-yellow-500' : 'bg-red-500') }}"
@@ -256,28 +259,28 @@
                             <!-- Name -->
                             <div class="col-span-2">
                                 <label class="block text-sm font-medium text-gray-700 mb-1">Category Name *</label>
-                                <input 
-                                    type="text" 
+                                <input
+                                    type="text"
                                     wire:model="name"
                                     wire:keyup="analyzeSeo"
                                     class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#5C9F01]0 focus:border-[#5C9F01]0 disabled:opacity-50"
                                     placeholder="Enter category name"
-                                    wire:loading.attr="disabled" 
+                                    wire:loading.attr="disabled"
                                     wire:target="create,edit,save"
                                 >
-                                @error('name') 
+                                @error('name')
                                     <span class="text-red-500 text-xs">{{ $message }}</span>
                                 @enderror
                             </div>
 
-                            
+
                         </div>
 
                         <!-- CKEditor -->
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
                             <div wire:ignore>
-                                <textarea 
+                                <textarea
                                     id="editor"
                                     wire:model="description"
                                     x-data="{
@@ -309,10 +312,10 @@
                                                         @this.set('description', editor.getData());
                                                         @this.analyzeSeo();
                                                     });
-                                                    
+
                                                     // Set initial content
                                                     editor.setData(@this.description);
-                                                    
+
                                                     // Update editor when Livewire content changes externally
                                                     Livewire.hook('commit', ({ component, commit, respond, succeed, fail }) => {
                                                         succeed(({ snapshot, effect }) => {
@@ -330,7 +333,7 @@
                                     class="hidden"
                                 ></textarea>
                             </div>
-                            @error('description') 
+                            @error('description')
                                 <span class="text-red-500 text-xs">{{ $message }}</span>
                             @enderror
                         </div>
@@ -338,18 +341,18 @@
                         <!-- Image -->
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Category Image</label>
-                            <input 
-                                type="file" 
+                            <input
+                                type="file"
                                 wire:model="image"
                                 class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#5C9F01]0 focus:border-[#5C9F01]0 disabled:opacity-50"
                                 accept="image/*"
-                                wire:loading.attr="disabled" 
+                                wire:loading.attr="disabled"
                                 wire:target="create,edit,save"
                             >
-                            @error('image') 
+                            @error('image')
                                 <span class="text-red-500 text-xs">{{ $message }}</span>
                             @enderror
-                            
+
                             @if($image)
                                 <div class="mt-2">
                                     <img src="{{ $image->temporaryUrl() }}" class="w-20 h-20 object-cover rounded border">
@@ -360,18 +363,18 @@
                         <!-- SEO Section -->
                         <div class="border-t border-gray-200 pt-4">
                             <h4 class="text-md font-semibold text-gray-900 mb-3">SEO Settings</h4>
-                            
+
                             <div class="space-y-4">
                                 <!-- Meta Title -->
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Meta Title</label>
-                                    <input 
-                                        type="text" 
+                                    <input
+                                        type="text"
                                         wire:model="meta_title"
                                         wire:keyup="analyzeSeo"
                                         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#5C9F01]0 focus:border-[#5C9F01]0 disabled:opacity-50"
                                         placeholder="Meta title for SEO"
-                                        wire:loading.attr="disabled" 
+                                        wire:loading.attr="disabled"
                                         wire:target="create,edit,save"
                                     >
                                 </div>
@@ -379,13 +382,13 @@
                                 <!-- Meta Description -->
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Meta Description</label>
-                                    <textarea 
+                                    <textarea
                                         wire:model="meta_description"
                                         wire:keyup="analyzeSeo"
                                         rows="2"
                                         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#5C9F01]0 focus:border-[#5C9F01]0 disabled:opacity-50"
                                         placeholder="Meta description for SEO"
-                                        wire:loading.attr="disabled" 
+                                        wire:loading.attr="disabled"
                                         wire:target="create,edit,save"
                                     ></textarea>
                                 </div>
@@ -393,13 +396,13 @@
                                 <!-- Meta Keywords -->
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Meta Keywords</label>
-                                    <input 
-                                        type="text" 
+                                    <input
+                                        type="text"
                                         wire:model="meta_keywords"
                                         wire:keyup="analyzeSeo"
                                         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#5C9F01]0 focus:border-[#5C9F01]0 disabled:opacity-50"
                                         placeholder="keyword1, keyword2, keyword3"
-                                        wire:loading.attr="disabled" 
+                                        wire:loading.attr="disabled"
                                         wire:target="create,edit,save"
                                     >
                                 </div>
@@ -407,12 +410,12 @@
                                 <!-- Meta Tags -->
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Meta Tags</label>
-                                    <textarea 
+                                    <textarea
                                         wire:model="meta_tags"
                                         rows="2"
                                         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#5C9F01]0 focus:border-[#5C9F01]0 disabled:opacity-50"
                                         placeholder="Additional meta tags"
-                                        wire:loading.attr="disabled" 
+                                        wire:loading.attr="disabled"
                                         wire:target="create,edit,save"
                                     ></textarea>
                                 </div>
@@ -420,26 +423,37 @@
                                 <!-- Page Schemas -->
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Page Schemas (JSON)</label>
-                                    <textarea 
+                                    <textarea
                                         wire:model="page_schemas"
                                         rows="3"
                                         class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#5C9F01]0 focus:border-[#5C9F01]0 disabled:opacity-50 font-mono text-sm"
                                         placeholder="Enter JSON schema data"
-                                        wire:loading.attr="disabled" 
+                                        wire:loading.attr="disabled"
                                         wire:target="create,edit,save"
                                     ></textarea>
                                 </div>
                             </div>
                         </div>
 
+                         <!-- Is Repairing Category -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Is Repairing Category</label>
+                            <div class="flex items-center">
+                                <input type="checkbox" wire:model="is_repairing_category"
+                                    class="h-4 w-4 text-[#5C9F01] focus:ring-[#5C9F01] border-gray-300 rounded">
+                                <span class="ml-2 text-sm text-gray-700">Mark as repairing category</span>
+                            </div>
+                            @error('is_repairing_category') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
+                        </div>
+
                         <!-- Active Status -->
                         <div class="flex items-center">
-                            <input 
-                                type="checkbox" 
+                            <input
+                                type="checkbox"
                                 wire:model="is_active"
                                 id="is_active"
                                 class="rounded border-gray-300 text-[#5C9F01]0 focus:ring-[#5C9F01]0 disabled:opacity-50"
-                                wire:loading.attr="disabled" 
+                                wire:loading.attr="disabled"
                                 wire:target="create,edit,save"
                             >
                             <label for="is_active" class="ml-2 text-sm text-gray-700">Active Category</label>
@@ -447,19 +461,19 @@
 
                         <!-- Form Actions with Loading State -->
                         <div class="flex justify-end space-x-3 pt-4 border-t border-gray-200">
-                            <button 
+                            <button
                                 type="button"
                                 wire:click="resetForm"
                                 class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors disabled:opacity-50"
-                                wire:loading.attr="disabled" 
+                                wire:loading.attr="disabled"
                                 wire:target="save"
                             >
                                 Cancel
                             </button>
-                            <button 
+                            <button
                                 type="submit"
                                 class="px-4 py-2 text-sm font-medium text-white bg-[#5C9F01]0 rounded-md hover:bg-[#5C9F01] transition-colors flex items-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed"
-                                wire:loading.attr="disabled" 
+                                wire:loading.attr="disabled"
                                 wire:target="save"
                             >
                                 <span wire:loading.remove wire:target="save">
@@ -480,8 +494,8 @@
 
     <!-- Flash Messages -->
     @if (session()->has('success'))
-        <div x-data="{ show: true }" 
-             x-show="show" 
+        <div x-data="{ show: true }"
+             x-show="show"
              x-init="setTimeout(() => show = false, 3000)"
              class="fixed bottom-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg transition-all duration-300">
             <div class="flex items-center space-x-2">
@@ -492,8 +506,8 @@
     @endif
 
     @if (session()->has('error'))
-        <div x-data="{ show: true }" 
-             x-show="show" 
+        <div x-data="{ show: true }"
+             x-show="show"
              x-init="setTimeout(() => show = false, 5000)"
              class="fixed bottom-4 right-4 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg transition-all duration-300">
             <div class="flex items-center space-x-2">
@@ -502,7 +516,7 @@
             </div>
         </div>
     @endif
-    
+
 </div>
 
 @push('scripts')

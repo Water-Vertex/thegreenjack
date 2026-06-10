@@ -17,6 +17,7 @@ class Problem extends Model
         'description',
         'price',
         'discounted_price',
+        'is_featured',
     ];
 
 

@@ -330,159 +330,166 @@
 @endif
 
                 <!-- Step 4: Select Problems (Two Column Layout) -->
-                @if($currentStep == 4)
-                <div>
-                    <div class="mb-6">
-                        <div class="text-sm text-[#5C9F01] mb-2">YOUR DEVICE: {{ $this->category_name }} {{ $this->brand_name }} {{ $this->model_name }}</div>
-                        <h2 class="text-xl font-bold text-gray-900 mb-2">Please Choose Device Problems</h2>
-                        <p class="text-gray-500">Select all issues you're experiencing with your device</p>
-                    </div>
+               @if($currentStep == 4)
+    <div>
+        <div class="mb-6">
+            <div class="text-sm text-[#5C9F01] mb-2">YOUR DEVICE: {{ $this->category_name }} {{ $this->brand_name }} {{ $this->model_name }}</div>
+            <h2 class="text-xl font-bold text-gray-900 mb-2">Please Choose Device Problems</h2>
+            <p class="text-gray-500">Select all issues you're experiencing with your device</p>
+        </div>
 
-                    <div class="mb-6">
-                        <div class="relative">
-                            <input
-                                type="text"
-                                wire:model.live.debounce="problemSearch"
-                                placeholder="Search problems..."
-                                class="w-full px-4 py-3 pl-11 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#5C9F01] focus:border-[#5C9F01]"
-                            >
-                            <svg class="absolute left-3 top-3.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                            </svg>
-                            @if($problemSearch)
-                                <button wire:click="$set('problemSearch', '')" class="absolute right-3 top-3 text-gray-400 hover:text-gray-600">
-                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                                    </svg>
-                                </button>
-                            @endif
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-    <div class="space-y-2 max-h-[500px] overflow-y-auto pr-2">
-        <h3 class="text-md font-semibold text-gray-900 sticky top-0 bg-white py-2 z-10">Available Problems</h3>
-        <div class="grid grid-cols-2 gap-3">
-            @forelse($this->filtered_problems as $problem)
-                <button
-                    type="button"
-                    wire:click="toggleProblem({{ $problem->id }})"
-                    class="w-full p-3 bg-white border rounded-xl text-left hover:bg-green-50 transition-all duration-200
-                        {{ in_array($problem->id, $selectedProblems) ? 'border-[#5C9F01] bg-green-50' : 'border-gray-200 hover:border-[#5C9F01]' }}"
+        <div class="mb-6">
+            <div class="relative">
+                <input
+                    type="text"
+                    wire:model.live.debounce="problemSearch"
+                    placeholder="Search problems..."
+                    class="w-full px-4 py-3 pl-11 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#5C9F01] focus:border-[#5C9F01]"
                 >
-                    <div class="flex items-start justify-between">
-                        <div class="flex-1">
-                            <div class="flex items-center">
-                                <div class="mr-2">
-                                    @if(in_array($problem->id, $selectedProblems))
-                                        <div class="w-4 h-4 bg-[#5C9F01] rounded-full flex items-center justify-center">
-                                            <svg class="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
-                                            </svg>
+                <svg class="absolute left-3 top-3.5 w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                </svg>
+                @if($problemSearch)
+                    <button wire:click="$set('problemSearch', '')" class="absolute right-3 top-3 text-gray-400 hover:text-gray-600">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                @endif
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div class="space-y-2 max-h-[500px] overflow-y-auto pr-2">
+                <h3 class="text-md font-semibold text-gray-900 sticky top-0 bg-white py-2 z-10">Available Problems</h3>
+                <div class="grid grid-cols-2 gap-3">
+                    @forelse($this->filtered_problems->sortByDesc('is_featured') as $problem)
+                        <button
+                            type="button"
+                            wire:click="toggleProblem({{ $problem->id }})"
+                            class="w-full p-3 bg-white border rounded-xl text-left hover:bg-green-50 transition-all duration-200
+                                {{ in_array($problem->id, $selectedProblems) ? 'border-[#5C9F01] bg-green-50' : 'border-gray-200 hover:border-[#5C9F01]' }}"
+                        >
+                            <div class="flex items-start justify-between">
+                                <div class="flex-1">
+                                    <div class="flex items-center">
+                                        <div class="mr-2">
+                                            @if(in_array($problem->id, $selectedProblems))
+                                                <div class="w-4 h-4 bg-[#5C9F01] rounded-full flex items-center justify-center">
+                                                    <svg class="w-2.5 h-2.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+                                                    </svg>
+                                                </div>
+                                            @else
+                                                <div class="w-4 h-4 border-2 border-gray-300 rounded-full"></div>
+                                            @endif
                                         </div>
+                                        <div>
+                                            @if($problem->is_featured)
+                                                <div class="flex items-center gap-1">
+                                                    <span class="font-medium text-gray-900 text-sm"><b>{{ $problem->name }}</b></span>
+                                                    {{-- <span class="text-xs bg-yellow-100 text-yellow-800 px-1.5 py-0.5 rounded">Featured</span> --}}
+                                                </div>
+                                            @else
+                                                <span class="font-medium text-gray-900 text-sm">{{ $problem->name }}</span>
+                                            @endif
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="text-right ml-2">
+                                    @if($problem->discounted_price)
+                                        <p class="text-xs text-gray-500 line-through">${{ number_format($problem->price, 2) }}</p>
+                                        <p class="text-xs font-semibold text-green-600">${{ number_format($problem->discounted_price, 2) }}</p>
+                                    @elseif($problem->price)
+                                        <p class="text-xs font-semibold text-gray-900">${{ number_format($problem->price, 2) }}</p>
                                     @else
-                                        <div class="w-4 h-4 border-2 border-gray-300 rounded-full"></div>
+                                        <p class="text-xs text-gray-500">Call for price</p>
                                     @endif
                                 </div>
-                                <div>
-                                    <span class="font-medium text-gray-900 text-sm">{{ $problem->name }}</span>
+                            </div>
+                        </button>
+                    @empty
+                        <div class="col-span-2 text-center py-12">
+                            <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            <p class="text-gray-500">No problems found for this device</p>
+                        </div>
+                    @endforelse
+                </div>
+            </div>
+
+            <div class="bg-gray-50 rounded-xl p-3 sticky top-4 h-[500px] overflow-y-auto">
+                <h3 class="text-sm font-semibold text-gray-900 mb-3 sticky top-0 bg-gray-50 py-1">Selected Problems</h3>
+
+                @if(count($selectedProblems) > 0)
+                    <div class="space-y-2">
+                        @foreach($formData['problems'] as $problemId => $problem)
+                            <div class="bg-white p-2 rounded-lg border border-gray-200 shadow-sm">
+                                <div class="flex items-start justify-between">
+                                    <div class="flex-1">
+                                        <p class="font-medium text-gray-900 text-sm">{{ $problem['name'] }}</p>
+                                        @if($problem['description'])
+                                            <p class="text-xs text-gray-500 mt-0.5">{{ $problem['description'] }}</p>
+                                        @endif
+                                    </div>
+                                    <div class="text-right ml-2">
+                                        <p class="font-semibold text-green-600 text-sm">${{ number_format($problem['price'], 2) }}</p>
+                                        <button type="button" wire:click="removeProblem({{ $problemId }})" class="text-red-500 hover:text-red-700 text-xs">
+                                            <svg class="w-3 h-3 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                            </svg>
+                                            Remove
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
+                        @endforeach
+                    </div>
+
+                    <div class="mt-4 pt-3 border-t-2 border-gray-300">
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-xs text-gray-600">Subtotal:</span>
+                            <span class="text-sm font-semibold text-gray-900">${{ number_format($this->total_price, 2) }}</span>
                         </div>
-                        <div class="text-right ml-2">
-                            @if($problem->discounted_price)
-                                <p class="text-xs text-gray-500 line-through">${{ number_format($problem->price, 2) }}</p>
-                                <p class="text-xs font-semibold text-green-600">${{ number_format($problem->discounted_price, 2) }}</p>
-                            @elseif($problem->price)
-                                <p class="text-xs font-semibold text-gray-900">${{ number_format($problem->price, 2) }}</p>
-                            @else
-                                <p class="text-xs text-gray-500">Call for price</p>
-                            @endif
+                        <div class="flex justify-between items-center mb-1">
+                            <span class="text-xs text-gray-600">Tax (estimated):</span>
+                            <span class="text-sm font-semibold text-gray-900">${{ number_format($this->total_price * 0.1, 2) }}</span>
+                        </div>
+                        <div class="flex justify-between items-center pt-2 border-t border-gray-200">
+                            <span class="text-sm font-bold text-gray-900">Total Estimate:</span>
+                            <span class="text-base font-bold text-green-600">${{ number_format($this->total_price * 1.1, 2) }}</span>
                         </div>
                     </div>
-                </button>
-            @empty
-                <div class="col-span-2 text-center py-12">
-                    <svg class="w-16 h-16 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                    </svg>
-                    <p class="text-gray-500">No problems found for this device</p>
-                </div>
-            @endforelse
+                @else
+                    <div class="text-center py-8">
+                        <svg class="w-12 h-12 text-gray-300 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                        </svg>
+                        <p class="text-gray-500 text-sm">No problems selected yet</p>
+                        <p class="text-xs text-gray-400 mt-1">Click on problems from the left panel to add them here</p>
+                    </div>
+                @endif
+            </div>
         </div>
-    </div>
-
-    <div class="bg-gray-50 rounded-xl p-3 sticky top-4 h-[500px] overflow-y-auto">
-        <h3 class="text-sm font-semibold text-gray-900 mb-3 sticky top-0 bg-gray-50 py-1">Selected Problems</h3>
 
         @if(count($selectedProblems) > 0)
-            <div class="space-y-2">
-                @foreach($formData['problems'] as $problemId => $problem)
-                    <div class="bg-white p-2 rounded-lg border border-gray-200 shadow-sm">
-                        <div class="flex items-start justify-between">
-                            <div class="flex-1">
-                                <p class="font-medium text-gray-900 text-sm">{{ $problem['name'] }}</p>
-                                @if($problem['description'])
-                                    <p class="text-xs text-gray-500 mt-0.5">{{ $problem['description'] }}</p>
-                                @endif
-                            </div>
-                            <div class="text-right ml-2">
-                                <p class="font-semibold text-green-600 text-sm">${{ number_format($problem['price'], 2) }}</p>
-                                <button type="button" wire:click="removeProblem({{ $problemId }})" class="text-red-500 hover:text-red-700 text-xs">
-                                    <svg class="w-3 h-3 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                                    </svg>
-                                    Remove
-                                </button>
-                            </div>
-                        </div>
+            <div class="mt-3 p-2 bg-[#5C9F01] bg-opacity-10 rounded-lg border border-[#5C9F01]">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-2">
+                        <svg class="w-4 h-4 text-[#5C9F01]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        <span class="text-xs text-white">{{ count($selectedProblems) }} problem(s) selected</span>
                     </div>
-                @endforeach
-            </div>
-
-            <div class="mt-4 pt-3 border-t-2 border-gray-300">
-                <div class="flex justify-between items-center mb-1">
-                    <span class="text-xs text-gray-600">Subtotal:</span>
-                    <span class="text-sm font-semibold text-gray-900">${{ number_format($this->total_price, 2) }}</span>
+                    <div class="text-xs font-semibold text-[#5C9F01]">
+                        Total: ${{ number_format($this->total_price, 2) }}
+                    </div>
                 </div>
-                <div class="flex justify-between items-center mb-1">
-                    <span class="text-xs text-gray-600">Tax (estimated):</span>
-                    <span class="text-sm font-semibold text-gray-900">${{ number_format($this->total_price * 0.1, 2) }}</span>
-                </div>
-                <div class="flex justify-between items-center pt-2 border-t border-gray-200">
-                    <span class="text-sm font-bold text-gray-900">Total Estimate:</span>
-                    <span class="text-base font-bold text-green-600">${{ number_format($this->total_price * 1.1, 2) }}</span>
-                </div>
-            </div>
-        @else
-            <div class="text-center py-8">
-                <svg class="w-12 h-12 text-gray-300 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                </svg>
-                <p class="text-gray-500 text-sm">No problems selected yet</p>
-                <p class="text-xs text-gray-400 mt-1">Click on problems from the left panel to add them here</p>
             </div>
         @endif
     </div>
-</div>
-
-@if(count($selectedProblems) > 0)
-    <div class="mt-3 p-2 bg-[#5C9F01] bg-opacity-10 rounded-lg border border-[#5C9F01]">
-        <div class="flex items-center justify-between">
-            <div class="flex items-center space-x-2">
-                <svg class="w-4 h-4 text-[#5C9F01]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-                <span class="text-xs text-white">{{ count($selectedProblems) }} problem(s) selected</span>
-            </div>
-            <div class="text-xs font-semibold text-[#5C9F01]">
-                Total: ${{ number_format($this->total_price, 2) }}
-            </div>
-        </div>
-    </div>
 @endif
-                </div>
-                @endif
 
                 <!-- Step 5: Service Type -->
                 @if($currentStep == 5)

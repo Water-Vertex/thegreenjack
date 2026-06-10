@@ -41,6 +41,7 @@ class Problems extends Component
     public $price = '';
     public $discounted_price = '';
     public $status = 'active';
+    public $is_featured = '';
 
     protected $queryString = [
         'search' => ['except' => ''],
@@ -151,6 +152,7 @@ class Problems extends Component
         $this->selectedCategory = $problem->category_id;
         $this->selectedBrand = $problem->brand_id;
         $this->selectedModel = $problem->brand_model_id;
+        $this->is_featured = $problem->is_featured;
 
         if ($problem->model) {
             $this->selectedBrand = $problem->model->brand_id;
@@ -185,6 +187,7 @@ class Problems extends Component
             'description' => $this->description,
             'price' => $this->price ?: null,
             'discounted_price' => $this->discounted_price ?: null,
+            'is_featured' => $this->is_featured ?: null,
         ];
 
         if ($this->formType === 'create') {

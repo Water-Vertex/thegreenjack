@@ -117,10 +117,10 @@
                         <div class="repair-submenu absolute left-0 top-full mt-0 w-64 bg-white shadow-xl border border-gray-100 rounded-lg hidden z-50">
                             <div class="py-2">
                                 @php
-                                    $pages = \App\Models\Page::where('page_category', 'device_repair')->get();
+                                    $pages = \App\Models\Category::where('is_repairing_category', 1)->get();
                                 @endphp
                                 @foreach($pages as $page)
-                                <a href="{{ route('device-repair', ['slug' => $page->slug]) }}" wire:navigate class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#5B9F01] whitespace-nowrap">{{$page->title}}</a>
+                                <a href="{{ route('device-repair', ['slug' => $page->slug]) }}" wire:navigate class="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#5B9F01] whitespace-nowrap">{{$page->name}}</a>
                                 @endforeach
                             </div>
                         </div>
