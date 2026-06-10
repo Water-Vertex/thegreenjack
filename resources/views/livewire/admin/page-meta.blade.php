@@ -139,6 +139,29 @@
                             <p class="text-xs text-gray-500 mt-1">Separate keywords with commas</p>
                         </div>
 
+                        <!-- FOCUS KEYWORD FIELD - ADDED -->
+                            <label class="block text-sm font-medium text-gray-700 mb-1">
+                                Focus Keyword 
+                            </label>
+                            <input 
+                                type="text" 
+                                wire:model.live="{{ $activeTab }}_focus_keyword"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500"
+                                placeholder="best digital marketing services"
+                            >
+                            <div class="mt-2 flex items-center justify-between">
+                                <p class="text-xs text-gray-500">
+                                    <i class="fas fa-info-circle"></i> 
+                                    This is the main keyword you want this page to rank for
+                                </p>
+                                @if(!empty(${$activeTab . '_focus_keyword'}))
+                                    <span class="text-xs text-green-600 bg-green-100 px-2 py-1 rounded-full">
+                                        <i class="fas fa-check-circle"></i> Keyword set: {{ Str::limit(${$activeTab . '_focus_keyword'}, 30) }}
+                                    </span>
+                                @endif
+                            </div>
+                        
+
                         <!-- Meta Tags -->
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Additional Meta Tags</label>
@@ -193,6 +216,18 @@
             </div>
         </div>
     @endif
+
+    @if (session()->has('error'))
+        <div x-data="{ show: true }" 
+             x-show="show" 
+             x-init="setTimeout(() => show = false, 5000)"
+             class="fixed bottom-4 right-4 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg transition-all duration-300">
+            <div class="flex items-center space-x-2">
+                <i class="fas fa-exclamation-circle"></i>
+                <span>{{ session('error') }}</span>
+            </div>
+        </div>
+    @endif
 </div>
 
 <style>
@@ -207,6 +242,15 @@
     height: 100%;
     background: linear-gradient(90deg, #ef4444, #f59e0b, #10b981);
     transition: width 0.3s ease;
+}
+
+.metric {
+    transition: all 0.2s ease;
+}
+
+.metric:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 </style>
 </div>

@@ -314,41 +314,76 @@
                         </div>
 
                         <!-- Featured Image -->
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Featured Image</label>
-                            <div class="flex items-center space-x-4">
-                                @if($featured_image)
-                                    <div class="flex items-center space-x-2">
-                                        <img src="{{ $featured_image->temporaryUrl() }}" alt="Preview" class="w-16 h-16 object-cover rounded border">
-                                        <button type="button" wire:click="$set('featured_image', null)" class="text-red-600 hover:text-red-800 text-sm">
-                                            <i class="fas fa-times"></i>
-                                        </button>
-                                    </div>
-                                @elseif($formType === 'edit' && $brandId)
-                                    @php
-                                        $brand = \App\Models\Brand::find($brandId);
-                                    @endphp
-                                    @if($brand && $brand->featured_image)
-                                        <div class="flex items-center space-x-2">
-                                            <img src="{{ Storage::url($brand->featured_image) }}" alt="{{ $brand->name }}" class="w-16 h-16 object-cover rounded border">
-                                            <button type="button" wire:click="removeImage" class="text-red-600 hover:text-red-800 text-sm">
-                                                <i class="fas fa-times"></i>
-                                            </button>
-                                        </div>
-                                    @endif
-                                @endif
-                                <input 
-                                    type="file" 
-                                    wire:model="featured_image"
-                                    class="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-[#5C9F01] file:text-[#5C9F01] hover:file:bg-[#5C9F01]"
-                                    accept="image/*"
-                                >
-                            </div>
-                            @error('featured_image') 
-                                <span class="text-red-500 text-xs">{{ $message }}</span>
-                            @enderror
-                            <p class="text-xs text-gray-500 mt-1">Recommended: 400x400px PNG/JPG</p>
-                        </div>
+<div>
+    <label class="block text-sm font-medium text-gray-700 mb-1">Featured Image</label>
+    
+    <!-- Image Preview and Upload Area -->
+    <div class="mt-1 flex items-center space-x-4">
+        <!-- Current Image Preview -->
+        @if($featured_image)
+            <div class="relative">
+                <img src="{{ $featured_image->temporaryUrl() }}" 
+                     alt="Preview" 
+                     class="h-20 w-20 object-cover rounded-lg border border-gray-200">
+                <button type="button" 
+                        wire:click="$set('featured_image', null)" 
+                        class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition-colors">
+                    <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+        @elseif($formType === 'edit' && $brandId)
+            @php
+                $brand = \App\Models\Brand::find($brandId);
+            @endphp
+            @if($brand && $brand->featured_image)
+                <div class="relative">
+                    <img src="{{ asset('storage/' . $brand->featured_image) }}" 
+                         alt="{{ $brand->name }}" 
+                         class="h-20 w-20 object-cover rounded-lg border border-gray-200">
+                    <button type="button" 
+                            wire:click="removeImage" 
+                            class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition-colors">
+                        <svg class="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+            @endif
+        @endif
+        
+        <!-- File Upload Input -->
+        <div class="flex-1">
+            <input type="file" 
+                   wire:model="featured_image"
+                   id="featured_image"
+                   class="block w-full text-sm text-gray-500
+                          file:mr-4 file:py-2 file:px-4
+                          file:rounded-md file:border-0
+                          file:text-sm file:font-semibold
+                          file:bg-[#5C9F01] file:text-white
+                          hover:file:bg-[#4a7f01] transition-colors
+                          cursor-pointer"
+                   accept="image/jpeg,image/png,image/jpg,image/gif,image/webp"
+                   wire:loading.attr="disabled">
+            
+            <!-- Upload Progress Indicator -->
+            <div wire:loading wire:target="featured_image" class="mt-2">
+                <div class="flex items-center space-x-2">
+                    <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-[#5C9F01]"></div>
+                    <span class="text-xs text-gray-500">Uploading...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    @error('featured_image') 
+        <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span>
+    @enderror
+    
+    <p class="text-xs text-gray-500 mt-2">Recommended: 400x400px. Max size: 2MB. Supported formats: JPG, PNG, GIF</p>
+</div>
 
                         <!-- Description -->
                         <div>

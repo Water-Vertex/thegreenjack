@@ -10,6 +10,7 @@ use Illuminate\Support\Str;
 use Livewire\WithFileUploads;
 use Illuminate\Support\Facades\Storage;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\Rule;
 
 #[Layout('components.admin-layout')]
 class Brands extends Component
@@ -25,14 +26,17 @@ class Brands extends Component
     public $showForm = false;
     public $formType = 'create';
     public $brandId = null;
-    public $selectedCategories = []; // Changed to array for multiple selection
+    public $selectedCategories = [];
     public $name = '';
     public $slug = '';
     public $description = '';
     public $blog_description = '';
     public $meta_title = '';
     public $meta_description = '';
-    public $featured_image;
+    public $featured_image = null;
+    
+    // Add this to track upload errors
+    public $uploadError = null;
 
     protected $queryString = [
         'search' => ['except' => ''],
@@ -43,7 +47,7 @@ class Brands extends Component
 
     protected $rules = [
         'name' => 'required|string|max:255',
-        'selectedCategories' => 'required|array|min:1', // At least one category required
+        'selectedCategories' => 'required|array|min:1',
         'selectedCategories.*' => 'exists:categories,id',
         'description' => 'nullable|string',
         'blog_description' => 'nullable|string',
@@ -55,6 +59,8 @@ class Brands extends Component
     protected $messages = [
         'selectedCategories.required' => 'Please select at least one category.',
         'selectedCategories.min' => 'Please select at least one category.',
+        'featured_image.image' => 'The file must be an image.',
+        'featured_image.max' => 'The image size must not exceed 2MB.',
     ];
 
     public function mount()
@@ -66,7 +72,7 @@ class Brands extends Component
     {
         $this->reset([
             'showForm', 'formType', 'brandId', 'selectedCategories', 'name', 'slug', 'description',
-            'blog_description', 'meta_title', 'meta_description', 'featured_image'
+            'blog_description', 'meta_title', 'meta_description', 'featured_image', 'uploadError'
         ]);
         $this->resetErrorBag();
     }
@@ -75,6 +81,22 @@ class Brands extends Component
     {
         if ($this->formType === 'create' && !$this->slug) {
             $this->slug = Str::slug($value);
+        }
+    }
+
+    // Add this method to handle file upload validation in real-time
+    public function updatedFeaturedImage()
+    {
+        $this->uploadError = null;
+        
+        try {
+            $this->validateOnly('featured_image');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            $this->uploadError = $e->validator->errors()->first('featured_image');
+            $this->featured_image = null;
+        } catch (\Exception $e) {
+            $this->uploadError = 'Upload failed: ' . $e->getMessage();
+            $this->featured_image = null;
         }
     }
 
@@ -107,13 +129,18 @@ class Brands extends Component
         $this->blog_description = $brand->blog_description;
         $this->meta_title = $brand->meta_title;
         $this->meta_description = $brand->meta_description;
-        $this->selectedCategories = $brand->categories->pluck('id')->toArray(); // Get selected category IDs
+        $this->selectedCategories = $brand->categories->pluck('id')->toArray();
         $this->showForm = true;
     }
 
     public function save()
     {
-        $this->validate();
+        try {
+            $this->validate();
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            session()->flash('error', 'Validation failed: ' . $e->getMessage());
+            return;
+        }
 
         $data = [
             'name' => $this->name,
@@ -126,25 +153,28 @@ class Brands extends Component
 
         // Handle featured image upload
         if ($this->featured_image) {
-            $imagePath = $this->featured_image->store('brands', 'public');
-            $data['featured_image'] = $imagePath;
+            try {
+                // Store the file
+                $imagePath = $this->featured_image->store('brands', 'public');
+                $data['featured_image'] = $imagePath;
+            } catch (\Exception $e) {
+                session()->flash('error', 'Failed to upload image: ' . $e->getMessage());
+                return;
+            }
         }
 
         if ($this->formType === 'create') {
             $brand = Brand::create($data);
-            // Attach categories
             $brand->categories()->attach($this->selectedCategories);
             session()->flash('success', 'Brand created successfully.');
         } else {
             $brand = Brand::findOrFail($this->brandId);
             
-            // Delete old featured image if new one is uploaded
             if ($this->featured_image && $brand->featured_image) {
                 Storage::disk('public')->delete($brand->featured_image);
             }
             
             $brand->update($data);
-            // Sync categories (remove old, add new)
             $brand->categories()->sync($this->selectedCategories);
             session()->flash('success', 'Brand updated successfully.');
         }
@@ -156,14 +186,11 @@ class Brands extends Component
     {
         $brand = Brand::findOrFail($brandId);
         
-        // Delete associated featured image if exists
         if ($brand->featured_image) {
             Storage::disk('public')->delete($brand->featured_image);
         }
 
-        // Detach categories (pivot table records will be deleted automatically due to cascade)
         $brand->categories()->detach();
-        
         $brand->delete();
         session()->flash('success', 'Brand deleted successfully.');
     }

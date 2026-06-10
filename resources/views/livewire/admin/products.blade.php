@@ -20,6 +20,14 @@
                     <span>Opening...</span>
                 </span>
             </button>
+
+            <button
+                wire:click="$set('showImportModal', true)"
+                class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors flex items-center space-x-2 text-sm font-medium"
+            >
+                <i class="fas fa-file-excel"></i>
+                <span>Import Excel</span>
+            </button>
         </div>
     </div>
 
@@ -519,7 +527,47 @@
                             <h4 class="text-md font-semibold text-gray-900 mb-3">SEO Settings</h4>
 
                             <div class="space-y-4">
+
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                                        Focus Keyword
+                                        <span class="text-xs text-gray-500"></span>
+                                    </label>
+                                    <input
+                                        type="text"
+                                        wire:model="focus_keyword"
+                                        wire:keyup="analyzeSeo"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#5C9F01] focus:border-[#5C9F01]"
+                                        placeholder="e.g., organic cotton t-shirt"
+                                    >
+                                    <div class="mt-2 flex items-center justify-between">
+                                        <!-- <p class="text-xs text-gray-500">
+                                            <i class="fas fa-info-circle"></i>
+                                            This keyword will be used to optimize your product for search engines
+                                        </p> -->
+                                        @if(!empty($focus_keyword))
+                                            <span class="text-xs text-green-600 bg-green-100 px-2 py-1 rounded-full">
+                                                <i class="fas fa-check-circle"></i> Keyword set: {{ Str::limit($focus_keyword, 30) }}
+                                            </span>
+                                        @endif
+
+                                </div>
+<!-- Product Type Selection - Add this in Basic Information section after Manufacturer -->
+<div class="col-span-2">
+    <label class="block text-sm font-medium text-gray-700 mb-1">
+        Product Type
+        <span class="text-xs text-gray-500">(Optional)</span>
+    </label>
+    <select
+        wire:model="type"
+        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#5C9F01] focus:border-[#5C9F01]"
+    >
+        <option value="">Select Type</option>
+        <option value="featured"> Featured</option>
+        <option value="best_seller"> Best Seller</option>
+    </select>
+</div>
                                 <div>
+
                                     <label class="block text-sm font-medium text-gray-700 mb-1">Meta Title</label>
                                     <input
                                         type="text"
@@ -639,4 +687,111 @@
             </div>
         </div>
     @endif
+
+<!-- Import Excel Modal -->
+@if($showImportModal)
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm" wire:click.self="closeImportModal">
+    <div class="bg-white rounded-lg shadow-xl w-full max-w-md mx-4">
+        <div class="flex justify-between items-center px-6 py-4 border-b border-gray-200">
+            <h3 class="text-lg font-semibold text-gray-900">Import Products from Excel</h3>
+            <button wire:click="closeImportModal" class="text-gray-400 hover:text-gray-600 transition-colors">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="p-6">
+            <form wire:submit="importProducts">
+                <div class="mb-4">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">
+                        Excel File (.xlsx, .xls, .csv)
+                    </label>
+                    <input 
+                        type="file" 
+                        wire:model="excelFile" 
+                        accept=".xlsx,.xls,.csv"
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#5C9F01] focus:border-[#5C9F01]"
+                    >
+                    @error('excelFile') 
+                        <span class="text-red-500 text-xs mt-1 block">{{ $message }}</span> 
+                    @enderror
+                    
+                    <div wire:loading wire:target="excelFile" class="mt-2">
+                        <div class="flex items-center text-sm text-gray-500">
+                            <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-500 mr-2"></div>
+                            Uploading...
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-blue-50 border border-blue-200 rounded-md p-3 mb-4">
+                    <p class="text-xs text-blue-800">
+                        <i class="fas fa-info-circle mr-1"></i>
+                        <strong>Required columns:</strong> name, price<br>
+                        <strong>Optional:</strong> description, stock, discounted_price, sku, upc, asin, manufacturer, moq, category_id, sub_category_id, meta_title, meta_description, meta_keywords, meta_tags, page_schemas, focus_keyword, type, is_active
+                    </p>
+                </div>
+                
+                <div class="flex justify-end space-x-3">
+                    <button 
+                        type="button" 
+                        wire:click="closeImportModal"
+                        class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors"
+                    >
+                        Cancel
+                    </button>
+                    <button 
+                        type="submit" 
+                        class="px-4 py-2 text-sm font-medium text-white bg-[#5C9F01] rounded-md hover:bg-[#4a7e01] transition-colors flex items-center space-x-2 disabled:opacity-50"
+                        wire:loading.attr="disabled"
+                        wire:target="importProducts,excelFile"
+                    >
+                        <span wire:loading.remove wire:target="importProducts">
+                            <i class="fas fa-upload"></i>
+                            <span>Import</span>
+                        </span>
+                        <span wire:loading wire:target="importProducts" class="flex items-center space-x-2">
+                            <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                            <span>Importing...</span>
+                        </span>
+                    </button>
+                </div>
+            </form>
+        </div>
+        
+        <div class="border-t border-gray-200 px-6 py-4 bg-gray-50 rounded-b-lg">
+            <button 
+                wire:click="downloadTemplate"
+                class="text-sm text-[#5C9F01] hover:text-[#4a7e01] flex items-center space-x-1"
+            >
+                <i class="fas fa-download"></i>
+                <span>Download Excel Template</span>
+            </button>
+        </div>
+    </div>
+</div>
+@endif
+
+
+<script>
+function validateExcelFile(input) {
+    const file = input.files[0];
+    if (file) {
+        const extension = file.name.split('.').pop().toLowerCase();
+        const validExtensions = ['xlsx', 'xls', 'csv'];
+        
+        if (!validExtensions.includes(extension)) {
+            alert('Please select an Excel file (.xlsx, .xls, or .csv)');
+            input.value = '';
+            @this.set('importFile', null);
+        }
+        
+        // Check file size (10MB)
+        if (file.size > 10485760) {
+            alert('File size must not exceed 10MB');
+            input.value = '';
+            @this.set('importFile', null);
+        }
+    }
+}
+</script>
 </div>

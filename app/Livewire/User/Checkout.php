@@ -9,6 +9,8 @@ use Livewire\Attributes\Layout;
 #[Layout('components.shop-layout')]
 class Checkout extends Component
 {
+
+
     // Step management
     public $currentStep = 1;
     public $totalSteps = 4; // Changed to 4 steps
@@ -145,6 +147,8 @@ class Checkout extends Component
         }
     }
 
+    
+
     public function validateCurrentStep()
     {
         $rules = [];
@@ -193,31 +197,77 @@ class Checkout extends Component
                 break;
         }
 
-        $this->validate($rules);
+       
+        if (!empty($rules)) {
+            $this->validate(rules: $rules);
+        }
     }
+
+    
 
     public function placeOrder()
-    {
-        $this->validateCurrentStep();
+{
+    $this->validateCurrentStep();
 
-        if (empty($this->cart)) {
-            session()->flash('error', 'Your cart is empty.');
-            return redirect()->route('shop');
-        }
-
-        // Generate order number
-        $this->orderNumber = 'ORD-' . strtoupper(uniqid());
-
-        // Here you would save to database
-        // Order::create([...]);
-
-        // Clear cart
-        Session::forget('cart');
-        $this->dispatch('cart-updated');
-
-        $this->orderPlaced = true;
-        $this->currentStep = 4; // Confirmation step
+    if (empty($this->cart)) {
+        session()->flash('error', 'Your cart is empty.');
+        return redirect()->route('shop');
     }
+
+    $this->orderNumber = 'ORD-' . strtoupper(uniqid());
+
+    // ✅ 1. Order save 
+    $order = \App\Models\Order::create([
+        'order_number'   => $this->orderNumber,
+        'user_id'        => auth()->id() ?? null,
+        'first_name'     => $this->firstName,
+        'last_name'      => $this->lastName,
+        'email'          => $this->email,
+        'phone'          => $this->phone,
+        'payment_method' => $this->paymentMethod,
+        'subtotal'       => $this->cartTotal,
+        'shipping_cost'  => $this->shippingCost,
+        'tax_amount'     => $this->taxAmount,
+        'grand_total'    => $this->grandTotal,
+        'order_notes'    => $this->orderNotes,
+        'status'         => 'pending',
+    ]);
+
+    // ✅ 2. Shipping details save 
+    \App\Models\ShippingDetail::create([
+        'order_id'           => $order->id,
+        'address'            => $this->address,
+        'apartment'          => $this->apartment,
+        'city'               => $this->city,
+        'state'              => $this->state,
+        'zip_code'           => $this->zipCode,
+        'country'            => $this->country,
+        'different_shipping' => $this->differentShippingAddress,
+        'shipping_address'   => $this->shippingAddress,
+        'shipping_apartment' => $this->shippingApartment,
+        'shipping_city'      => $this->shippingCity,
+        'shipping_state'     => $this->shippingState,
+        'shipping_zip_code'  => $this->shippingZipCode,
+        'shipping_country'   => $this->shippingCountry,
+    ]);
+
+    // ✅ 3. Order items save 
+    foreach ($this->cart as $item) {
+        \App\Models\OrderItem::create([
+            'order_id'     => $order->id,
+            'product_id'   => $item['id'],
+            'product_name' => $item['name'],
+            'price'        => $item['price'],
+            'quantity'     => $item['quantity'],
+            'subtotal'     => $item['price'] * $item['quantity'],
+        ]);
+    }
+
+    Session::forget('cart');
+    $this->dispatch('cart-updated');
+    $this->orderPlaced = true;
+    $this->currentStep = 4;
+}
 
     public function continueShopping()
     {

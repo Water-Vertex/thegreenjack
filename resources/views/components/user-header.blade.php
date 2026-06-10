@@ -1,3 +1,6 @@
+@php
+    $settings = \App\Models\Setting::find(1);
+    @endphp
 <!-- Header Start -->
 <header class="bg-white shadow-sm z-50">
     <!-- Top Bar - Store Info & Currency/Lang/Account -->
@@ -33,7 +36,7 @@
             <!-- Logo -->
             <div class="flex items-center justify-between w-full lg:w-auto">
                 <a href="#" class="flex items-center gap-2">
-                    <img src="{{asset('assets/images/logo/green-jack-logo-header.png')}}" alt="Logo" class="h-10 md:h-auto">
+                    <img src="@if($settings){{asset('storage/'.$settings->main_logo)}}@endif" alt="Logo" class="h-10 md:h-auto">
                 </a>
             </div>
 
@@ -48,7 +51,7 @@
                         </div>
                         <div>
                             <p class="text-xs text-gray-400 font-medium uppercase tracking-wider">Visit Us</p>
-                            <p class="text-sm font-semibold text-gray-800">123 Electronics Blvd, Tech City, TC 90210</p>
+                            <p class="text-sm font-semibold text-gray-800">@if($settings){{$settings->address}}@endif</p>
                         </div>
                     </div>
                 </div>
@@ -62,8 +65,8 @@
                         </div>
                         <div>
                             <p class="text-xs text-gray-400 font-medium uppercase tracking-wider">Email Us</p>
-                            <p class="text-sm font-semibold text-gray-800">support@electronics.com</p>
-                            <p class="text-xs text-gray-500">24/7 Support</p>
+                            <p class="text-sm font-semibold text-gray-800">@if($settings){{$settings->email}}@endif</p>
+                            <!--<p class="text-xs text-gray-500">24/7 Support</p>-->
                         </div>
                     </div>
                 </div>
@@ -77,8 +80,8 @@
                         </div>
                         <div>
                             <p class="text-xs text-gray-400 font-medium uppercase tracking-wider">Call Us</p>
-                            <p class="text-sm font-semibold text-gray-800">+1 (555) 123-4567</p>
-                            <p class="text-xs text-gray-500">Mon-Fri 9am-6pm</p>
+                            <p class="text-sm font-semibold text-gray-800">@if($settings){{$settings->phone}}@endif</p>
+                            <!--<p class="text-xs text-gray-500">Mon-Fri 9am-6pm</p>-->
                         </div>
                     </div>
                 </div>
@@ -123,7 +126,7 @@
                         </div>
                     </div>
 
-                    <a href="{{route('shop')}}" wire:navigate class="py-3 px-5 text-gray-700 font-semibold hover:text-[#5B9F01] border-b-2 border-transparent hover:border-[#5B9F01] transition whitespace-nowrap">Shop</a>
+                    <a href="{{route('shop')}}" target="_blank" class="py-3 px-5 text-gray-700 font-semibold hover:text-[#5B9F01] border-b-2 border-transparent hover:border-[#5B9F01] transition whitespace-nowrap">Shop</a>
 
                     <div class="relative repair-menu">
                         <button class="repair-btn py-3 px-5 text-gray-700 font-semibold hover:text-[#5B9F01] border-b-2 border-transparent hover:border-[#5B9F01] transition flex items-center gap-1 whitespace-nowrap">
@@ -132,7 +135,7 @@
                         <div class="repair-submenu absolute left-0 top-full mt-0 w-64 bg-white shadow-xl border border-gray-100 rounded-lg hidden z-50">
                             <div class="py-2">
                                 <a href="{{route('printing')}}" wire:navigate class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#5B9F01] whitespace-nowrap">Document Printing</a>
-                                <a href="{{route('printing')}}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#5B9F01] whitespace-nowrap">Business Cards</a>
+                                <a href="{{route('printing')}}" wire:navigate class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#5B9F01] whitespace-nowrap">Business Cards</a>
                                 <a href="{{route('printing')}}" wire:navigate class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#5B9F01] whitespace-nowrap">Signs, Banners, & Posters</a>
                                 <a href="{{route('printing')}}" wire:navigate class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#5B9F01] whitespace-nowrap">Marketing Materials</a>
                                 <a href="{{route('printing')}}" wire:navigate class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-[#5B9F01] whitespace-nowrap">Cards & Invitations</a>
@@ -144,7 +147,10 @@
                         </div>
                     </div>
                     <a href="#" class="py-3 px-5 text-gray-600 hover:text-[#5B9F01] font-semibold transition whitespace-nowrap">Finance</a>
+                    <a href="{{route('blogs')}}" wire:navigate class="py-3 px-5 text-gray-700 font-semibold hover:text-[#5B9F01] border-b-2 border-transparent hover:border-[#5B9F01] transition whitespace-nowrap">Blogs</a>
                     <a href="{{ route('contact-us') }}" wire:navigate class="py-3 px-5 text-gray-600 hover:text-[#5B9F01] font-semibold transition whitespace-nowrap">Contact Us</a>
+
+                      <a href="{{ route('blogs') }}" wire:navigate class="py-3 px-5 text-gray-600 hover:text-[#5B9F01] font-semibold transition whitespace-nowrap">Blog</a>
                 </div>
 
                 <span class="hidden lg:inline-block text-sm text-gray-500 py-3 whitespace-nowrap"><i class="fas fa-truck"></i> Free Shipping on Orders $50+</span>
@@ -188,7 +194,7 @@
             </div>
         </div>
 
-        <a href="{{route('shop')}}" wire:navigate class="block py-3 text-gray-700 border-b border-gray-200  font-semibold hover:text-[#5B9F01]">Shop</a>
+        <a href="{{route('shop')}}" target="_blank" class="block py-3 text-gray-700 border-b border-gray-200  font-semibold hover:text-[#5B9F01]">Shop</a>
 
         <div class="border-b border-gray-200 ">
             <button id="printingMobileBtn" class="flex justify-between items-center w-full py-3 text-gray-700 font-semibold hover:text-[#5B9F01]">
@@ -209,7 +215,7 @@
 
         <a href="#" class="block py-3 text-gray-600 border-b border-gray-200  hover:text-[#5B9F01]">Finance</a>
         <a href="{{ route('contact-us') }}" wire:navigate class="block py-3 text-gray-600 border-b border-gray-200 hover:text-[#5B9F01]">Contact Us</a>
-
+ <a href="{{ route('blogs') }}" wire:navigate class="block py-3 text-gray-600 border-b border-gray-200 font-semibold hover:text-[#5B9F01]">Blog</a>
         <!-- CTA Button -->
         <div class="mt-6 pt-4 border-t border-gray-200 ">
             <a href="#" class="block w-full text-center bg-[#5B9F01] text-white py-3 rounded-lg font-semibold hover:bg-[#4a7f01] transition">

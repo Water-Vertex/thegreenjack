@@ -1,4 +1,11 @@
 <div>
+    @section('meta_section')
+ <meta name="title" content="@if($metas){{$metas->service_meta_title}}@endif"/>
+  <meta name="description" content="@if($metas){{$metas->service_meta_description}}@endif"/>
+ <meta name="keywords" content="@if($metas){{$metas->service_meta_keywords}}@endif"/>
+ <meta name="tags" content="@if($metas){{$metas->service_meta_tags}}@endif"/>
+ @if($metas){!!$metas->service_page_schema!!}@endif
+@endsection
     <div class="bg-gray-50 py-6">
         <div class="container mx-auto px-4 max-w-7xl">
             <!-- Breadcrumb -->

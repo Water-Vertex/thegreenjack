@@ -4,6 +4,7 @@ namespace App\Livewire\Admin;
 
 use App\Models\Brand;
 use App\Models\BrandModel;
+use App\Models\Category;
 use Livewire\Component;
 use Livewire\WithPagination;
 use Illuminate\Support\Str;
@@ -21,11 +22,12 @@ class Models extends Component
     public $sortDirection = 'asc';
     public $perPage = 10;
 
-    // Form properties
     public $showForm = false;
     public $formType = 'create';
     public $modelId = null;
+
     public $name = '';
+    public $category_id = '';
     public $brand_id = '';
     public $slug = '';
     public $description = '';
@@ -35,41 +37,77 @@ class Models extends Component
     public $featured_image;
     public $existing_image = null;
 
+    public $categories = [];
+    public $brands = [];
+
     protected $queryString = [
         'search' => ['except' => ''],
         'sortField' => ['except' => 'name'],
         'sortDirection' => ['except' => 'asc'],
-        'perPage' => ['except' => 10]
+        'perPage' => ['except' => 10],
     ];
 
-    protected $rules = [
-        'name' => 'required|string|max:255',
-        'brand_id' => 'nullable|integer',
-        'slug' => 'required|string|max:255|unique:brand_models,slug',
-        'description' => 'nullable|string',
-        'blog_description' => 'nullable|string',
-        'meta_title' => 'nullable|string|max:255',
-        'meta_description' => 'nullable|string',
-        'featured_image' => 'nullable|image|max:2048',
-    ];
+    protected function rules()
+    {
+        return [
+            'name' => 'required|string|max:255',
+            'category_id' => 'required|integer|exists:categories,id',
+            'brand_id' => 'required|integer|exists:brands,id',
+            'slug' => 'required|string|max:255|unique:brand_models,slug,' . $this->modelId,
+            'description' => 'nullable|string',
+            'blog_description' => 'nullable|string',
+            'meta_title' => 'nullable|string|max:255',
+            'meta_description' => 'nullable|string',
+            'featured_image' => 'nullable',
+        ];
+    }
 
     public function mount()
     {
-        $this->resetForm();
+        $this->categories = Category::orderBy('name')->get();
+        $this->brands = collect();
     }
 
     public function resetForm()
     {
         $this->reset([
-            'showForm', 'formType', 'modelId', 'name', 'brand_id', 'slug', 'description',
-            'blog_description', 'meta_title', 'meta_description', 'featured_image', 'existing_image'
+            'showForm',
+            'formType',
+            'modelId',
+            'name',
+            'category_id',
+            'brand_id',
+            'slug',
+            'description',
+            'blog_description',
+            'meta_title',
+            'meta_description',
+            'featured_image',
+            'existing_image',
         ]);
+
+        $this->brands = collect();
         $this->resetErrorBag();
+    }
+
+    public function updatedCategoryId($value)
+    {
+        $this->brand_id = '';
+
+        if ($value) {
+            $this->brands = Brand::whereHas('categories', function ($query) use ($value) {
+                $query->where('categories.id', $value);
+            })
+            ->orderBy('name')
+            ->get();
+        } else {
+            $this->brands = collect();
+        }
     }
 
     public function updatedName($value)
     {
-        if ($this->formType === 'create' && !$this->slug) {
+        if ($this->formType === 'create') {
             $this->slug = Str::slug($value);
         }
     }
@@ -94,10 +132,11 @@ class Models extends Component
     public function edit($modelId)
     {
         $model = BrandModel::findOrFail($modelId);
-        
+
         $this->formType = 'edit';
         $this->modelId = $model->id;
         $this->name = $model->name;
+        $this->category_id = $model->category_id;
         $this->brand_id = $model->brand_id;
         $this->slug = $model->slug;
         $this->description = $model->description;
@@ -105,10 +144,16 @@ class Models extends Component
         $this->meta_title = $model->meta_title;
         $this->meta_description = $model->meta_description;
         $this->existing_image = $model->featured_image;
-        $this->showForm = true;
 
-        // Update rules for edit
-        $this->rules['slug'] = 'required|string|max:255|unique:brand_models,slug,' . $modelId;
+        if ($this->category_id) {
+            $this->brands = Brand::whereHas('categories', function ($query) {
+                $query->where('categories.id', $this->category_id);
+            })
+            ->orderBy('name')
+            ->get();
+        }
+
+        $this->showForm = true;
     }
 
     public function save()
@@ -117,7 +162,8 @@ class Models extends Component
 
         $data = [
             'name' => $this->name,
-            'brand_id' => $this->brand_id ?: null,
+            'category_id' => $this->category_id,
+            'brand_id' => $this->brand_id,
             'slug' => $this->slug,
             'description' => $this->description,
             'blog_description' => $this->blog_description,
@@ -125,15 +171,12 @@ class Models extends Component
             'meta_description' => $this->meta_description,
         ];
 
-        // Handle featured image upload
         if ($this->featured_image) {
-            // Delete old image if exists
-            if ($this->formType === 'edit' && $this->existing_image) {
-                Storage::disk('public')->delete($this->existing_image);
-            }
-            
-            $imagePath = $this->featured_image->store('brand_models', 'public');
-            $data['featured_image'] = $imagePath;
+            // if ($this->formType === 'edit' && $this->existing_image) {
+            //     Storage::disk('public')->delete($this->existing_image);
+            // }
+
+            $data['featured_image'] = $this->featured_image->store('brand_models', 'public');
         } elseif ($this->formType === 'edit' && $this->existing_image) {
             $data['featured_image'] = $this->existing_image;
         }
@@ -142,8 +185,7 @@ class Models extends Component
             BrandModel::create($data);
             session()->flash('success', 'Brand model created successfully.');
         } else {
-            $model = BrandModel::findOrFail($this->modelId);
-            $model->update($data);
+            BrandModel::findOrFail($this->modelId)->update($data);
             session()->flash('success', 'Brand model updated successfully.');
         }
 
@@ -153,13 +195,13 @@ class Models extends Component
     public function delete($modelId)
     {
         $model = BrandModel::findOrFail($modelId);
-        
-        // Delete associated featured image if exists
+
         if ($model->featured_image) {
             Storage::disk('public')->delete($model->featured_image);
         }
 
         $model->delete();
+
         session()->flash('success', 'Brand model deleted successfully.');
     }
 
@@ -167,32 +209,36 @@ class Models extends Component
     {
         if ($this->modelId) {
             $model = BrandModel::findOrFail($this->modelId);
+
             if ($model->featured_image) {
                 Storage::disk('public')->delete($model->featured_image);
                 $model->update(['featured_image' => null]);
-                session()->flash('success', 'Featured image removed successfully.');
             }
         }
+
         $this->featured_image = null;
         $this->existing_image = null;
+
+        session()->flash('success', 'Featured image removed successfully.');
     }
 
     public function render()
     {
-        $brands = Brand::pluck('name', 'id');
-        $models = BrandModel::when($this->search, function ($query) {
-                $query->where('name', 'like', '%' . $this->search . '%')
-                      ->orWhere('description', 'like', '%' . $this->search . '%')
-                      ->orWhere('blog_description', 'like', '%' . $this->search . '%')
-                      ->orWhere('meta_title', 'like', '%' . $this->search . '%')
-                      ->orWhere('meta_description', 'like', '%' . $this->search . '%');
+        $models = BrandModel::with(['brand', 'category'])
+            ->when($this->search, function ($query) {
+                $query->where(function ($q) {
+                    $q->where('name', 'like', '%' . $this->search . '%')
+                        ->orWhere('description', 'like', '%' . $this->search . '%')
+                        ->orWhere('blog_description', 'like', '%' . $this->search . '%')
+                        ->orWhere('meta_title', 'like', '%' . $this->search . '%')
+                        ->orWhere('meta_description', 'like', '%' . $this->search . '%');
+                });
             })
             ->orderBy($this->sortField, $this->sortDirection)
             ->paginate($this->perPage);
 
         return view('livewire.admin.models', [
-            'brands' => $brands,
-            'models' => $models
+            'models' => $models,
         ]);
     }
 }
