@@ -37,4 +37,8 @@ return new class extends Migration
     {
         Schema::dropIfExists('programatic_seos');
     }
+<<<<<<< HEAD
 };
+=======
+};
+>>>>>>> origin/Muneeb

@@ -17,7 +17,11 @@
             <a href="{{ route('admin.index') }}" wire:navigate class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/80 hover:text-white hover:bg-[#5C9F01]/40 transition-all duration-200 group">
                 <span class="material-icons text-2xl">dashboard</span>
                 <span class="text-sm font-medium">Dashboard</span>
-            </a>
+                
+          <a href="{{ route('admin.orders') }}" wire:navigate class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/80 hover:text-white hover:bg-[#5C9F01]/40 transition-all duration-200 group">
+    <span class="material-icons text-2xl">shopping_bag</span>
+    <span class="text-sm font-medium">Orders</span>
+</a>
 
             <a href="{{ route('admin.categories') }}" wire:navigate class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-white/80 hover:text-white hover:bg-[#5C9F01]/40 transition-all duration-200 group">
                 <span class="material-icons text-2xl">category</span>
